@@ -1,10 +1,12 @@
-import json
 import threading
 import configparser
 import time
-from pythonosc import dispatcher
-from pythonosc import osc_server
-from pythonosc.udp_client import SimpleUDPClient
+
+import globals
+import compat
+import client
+import server
+import scaling_utils
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -15,204 +17,151 @@ DEFAULT_SERVER_PORT = int(config['OSC server']['port'])
 DEFAULT_CLIENT_PORT = int(config['OSC client']['port'])
 MIN_HEIGHT = float(config['limits']['MinHeight'])
 MAX_HEIGHT = float(config['limits']['MaxHeight'])
+globals.MIN_HEIGHT = MIN_HEIGHT
+globals.MAX_HEIGHT = MAX_HEIGHT
 
-world_min = 0
-world_max = 0
-world_scaling_allowed = True
-current_eyeheight = 0.0
-current_scale_factor = 0.0
-scaling_duration = 0.0
-scaling = False
-accurate = False
+globals.compat_magsscaleadjuster = bool(int(config['compatibility']['MagsScaleAdjuster']))
 
-client = None
-server = None
+help_text = """Available commands:
+    quit  : Quits the app.
+    exit
 
-def float_range(start, stop, step):
-    if step >= 0:
-        while start < stop:
-            yield start
-            start += step
-    else:
-        while start > stop:
-            yield start
-            start += step
+    info  : Shows various information about your size and limits.
+    i
 
-def get_base_eyeheight():
-    if current_scale_factor == 0:
-        return 0
-    return current_eyeheight / current_scale_factor
+    min   : Sets your height to the minimum height set by the world.
+    max   : Sets your height to the maximum height set by the world.
+    base  : Sets your height to the original size of your avatar.
 
-def eyeheight_min_handler(address, *args):
-    global world_min
-    height = args[0]
-    if isinstance(height, int):
-        height = float(height)
-    if isinstance(height, float):
-        world_mix = height
+    override   : Makes the app forget the world limitations.
+    o
 
-def eyeheight_max_handler(address, *args):
-    global world_max
-    height = args[0]
-    if isinstance(height, int):
-        height = float(height)
-    if isinstance(height, float):
-        world_max = height
+    instant    : Makes scaling instant. (default behavior)
+    smooth [t] : Makes scaling not instant.
+    s            You can also set a duration in seconds as the second argument.
+                 (defaults to 5 seconds if not specified)
 
-def scaling_allowed_handler(address, *args):
-    global world_scaling_allowed
-    if args[0] == False:
-        world_scaling_allowed = False
-        print("Avatar scaling has been \033[0;31mdisabled\033[0m.")
-    else:
-        world_scaling_allowed = True
-        print("Avatar scaling has been \033[0;32menabled\033[0m.")
+    fps [rate] : Sets the expected in-game frame-rate.
+                 Since this program can't directly read your in-game frame-rate
+                 (at least not yet) it can make bad assumptions
+                 which can result in more visual glitches.
+                 This commands allows you to tell your in-game frame-rate
+                 so that the program can make better assumptions.
+                 It is recommended to cap your FPS.
 
-def eyeheight_handler(address, *args):
-    global current_eyeheight
-    height = args[0]
-    if isinstance(height, int):
-        height = float(height)
-    if isinstance(height, float):
-        if current_eyeheight != height and not scaling:
-            print("New eye height: " + str(height) + " m")
-        current_eyeheight = height
+To change your size, just type your desired eye height (in meters).
+Do NOT add unit suffixes! They are not supported, for now."""
 
-def scalefactor_handler(address, *args):
-    global current_scale_factor
-    scale_factor = args[0]
-    if isinstance(scale_factor, int):
-        scale_factor = float(height)
-    if isinstance(scale_factor, float):
-        current_scale_factor = scale_factor
-
-def custom_scaling_handler(address, *args):
-    # TODO: Add compatibility with custom scaling systems
-    pass
-
-def start_server(ip, port):
-    global server
-    if server:
-        raise Exception("OSC server has already been started.")
-    print(f"Starting OSC server on {ip}:{port}")
-    dispatch = dispatcher.Dispatcher()
-    dispatch.map("/avatar/eyeheightmin", eyeheight_min_handler)
-    dispatch.map("/avatar/eyeheightmax", eyeheight_max_handler)
-    dispatch.map("/avatar/eyeheightscalingallowed", scaling_allowed_handler)
-    dispatch.map("/avatar/eyeheight", eyeheight_handler)
-    dispatch.map("/avatar/parameters/ScaleFactor", scalefactor_handler)
-    dispatch.map("/avatar/parameters/*", custom_scaling_handler)
-    server = osc_server.ThreadingOSCUDPServer((ip, port), dispatch)
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-    print("Started OSC server.")
-
-def start_client(ip, port):
-    global client
-    print(f"Starting OSC client on {ip}:{port}")
-    client = SimpleUDPClient(ip, port)
-    print("Started OSC client.")
-
-def process_command(command):
-    global world_min
-    global world_max
-    global world_scaling_allowed
-    global scaling_duration
-    height = current_eyeheight
+def process_command(full_command):
+    tokens = full_command.split()
+    if len(tokens) < 1:
+        return
+    client = globals.client
+    height = globals.current_eyeheight
+    command = tokens[0]
+    desired_height = height
     if command == "quit" or command == "exit":
         quit()
     elif command == "help":
-        print("Available commands:")
-        print(" quit | exit  : Quits the app.")
-        print(" info | i     : Shows various information about your size and limits.")
-        print(" min          : Sets your height to the minimum height set by the world.")
-        print(" max          : Sets your height to the maximum height set by the world.")
-        print(" override | o : Makes the app forget the world limitations.")
-        print(" ")
-        print("To change your size, just type your desired eye height (in meters).")
-        print("Do NOT add unit suffixes! They are not supported, for now.")
+        print(help_text)
     elif command == "min":
-        height = world_min
+        desired_height = globals.world_min_eyeheight
     elif command == "max":
-        height = world_max
+        desired_height = globals.world_max_eyeheight
+    elif command == "base":
+        desired_height = scaling_utils.get_base_eyeheight()
     elif command == "info" or command == "i":
-        if current_eyeheight > 0:
-            print("Calculated base eye height: ", get_base_eyeheight(), 'm')
-            print("Current eye height: ", current_eyeheight, 'm')
-            print("Current scale factor: ", current_scale_factor)
+        print("Avatar:")
+        if globals.current_eyeheight > 0:
+            print("  Calculated base eye height:", scaling_utils.get_base_eyeheight(), 'm')
+            print("  Current eye height:", globals.current_eyeheight, 'm')
+            print("  Current scale factor:", globals.current_scale_factor)
         else:
-            print("Scaling/height data not available. Please change your height first.")
-        if world_scaling_allowed:
-            if world_min == 0 and world_max == 0:
-                print("World scaling limits are unknown.")
-                print("Please (re)join a world or use the override command.")
+            print("  Height data not available.")
+            print("  Please reload your avatar, or change your height manually.")
+        if globals.smooth_scaling_duration > 0:
+            print("  Smooth scaling is enabled.")
+            print(f"    Duration: {globals.smooth_scaling_duration} s")
+            print(f"    Frequency: {globals.smooth_scaling_step_frequency} hz")
+            print(f"    Jitter: ±{globals.smooth_scaling_jitter_range}")
+            if globals.smooth_scaling_jitter_range > 0:
+                print("    Some fake jitter is added to keep more annoying visual glitches at bay.")
+                print("    You can lower/disable this effect in globals.py if it really bothers you.")
+                print("      (Requires restart if you change it)")
+        else:
+            print("  Smooth scaling is disabled. (Instant scaling mode.)")
+        if globals.world_scaling_allowed:
+            print("World limits:")
+            if (globals.world_min_eyeheight == 0 and
+                globals.world_max_eyeheight == 0):
+                print("  World limits are unknown.")
+                print("  Please rejoin the instance (or use the override command).")
             else:
-                print("World min eye height: ", world_min, 'm')
-                print("World max eye height: ", world_max, 'm')
-                print("Note: You may be able to go over these limits.")
-                print("      Only some worlds actually enforce them.")
+                print("  Min eye height: ", globals.world_min_eyeheight, 'm')
+                print("  Max eye height: ", globals.world_max_eyeheight, 'm')
+                print("  Note: You may be able to go over these limits.")
+                print("        Only some worlds actually enforce them.")
         else:
-            print("Avatar scaling is currently disabled.")
+            print("Avatar scaling is currently disabled by the world.")
     elif command == "override" or command == "o":
-        world_min = MIN_HEIGHT
-        world_max = MAX_HEIGHT
-        world_scaling_allowed = True
-        scaling = False
-        print("Forgot world limits ;)")
+        globals.world_min_eyeheight = MIN_HEIGHT
+        globals.world_max_eyeheight = MAX_HEIGHT
+        globals.world_scaling_allowed = True
+        print("Forgot the world limits ;)")
         print("You may encounter weird behavior.")
     elif command == "instant":
-        scaling_duration = 0
-    elif command == "smooth":
-        scaling_duration = float(config["experimental.smoothScaling"]["LengthSeconds"])
+        globals.smooth_scaling_duration = 0
+    elif command == "smooth" or command == "s":
+        try:
+            length = abs(float(tokens[1]))
+        except:
+            length = 5.0
+        finally:
+            if globals.smooth_scaling_duration <= 0:
+                print(f"Enabled smooth scaling.")
+            globals.smooth_scaling_duration = length
+            print(f"Smooth scaling duration set to {length} s.")
+            if globals.current_eyeheight == 0:
+                print("Please reload your avatar!")
+    elif command == "fps":
+        try:
+            fps = abs(float(tokens[1]))
+            globals.FPS = fps
+            globals.smooth_scaling_step_frequency = fps * 4
+            print(f"Epected FPS set to {fps}")
+        except:
+            pass
+    elif command == "frequency" or command == "freq":
+        try:
+            frequency = abs(float(tokens[1]))
+            globals.smooth_scaling_step_frequency = frequency
+            print(f"Smooth scaling step frequency set to {frequency}")
+        except:
+            pass
     else:
         try:
             desired_height = float(command)
         except:
-            print("Unknown command.")
-        else:
+            print("Unknown command. You can type \"help\" for a list of commands.")
+    if desired_height != globals.current_eyeheight:
+        if globals.world_scaling_allowed:
             if desired_height < MIN_HEIGHT:
-                print("too small")
+                print(f"Too small! Minimum {MIN_HEIGHT} m.")
             elif desired_height > MAX_HEIGHT:
-                print("too big")
+                print(f"Too big! Maximum {MAX_HEIGHT} m.")
             else:
-                if world_scaling_allowed:
-                    set_eyeheight(desired_height)
-                    return
-                else:
-                    print("Avatar scaling not available!")
-    if height != current_eyeheight:
-        if world_scaling_allowed:
-            set_eyeheight(height)
+                client.set_eyeheight(desired_height, globals.smooth_scaling_duration)
         else:
-            print("Avatar scaling not available!")
-
-def set_eyeheight(height):
-    global scaling
-    height = min(max(height, MIN_HEIGHT), MAX_HEIGHT)
-    if scaling:
-        return
-    if client:
-        if scaling_duration > 0 and current_eyeheight != height:
-            difference = height - current_eyeheight
-            step_length = float(config["experimental.smoothScaling"]["StepLengthSeconds"])
-            num_steps = scaling_duration / step_length
-            scaling = True
-            for h in float_range(current_eyeheight, height, difference / num_steps):
-                client.send_message("/avatar/eyeheight", [h])
-                time.sleep(step_length)
-            time.sleep(0.2)
-            scaling = False
-        client.send_message("/avatar/eyeheight", [height])
-    else:
-        raise Exception("set_eyeheight has been called without a client")
+            print("Avatar scaling is not available right now.")
 
 def main():
     print("\033[0;33m[ KutayX7's VRChat Avi Scaler ]\033[0m")
     print("For issues and feedback, visit https://github.com/KutayX7/vrc-avi-scaler/issues")
+    print("Type \"help\" to see a list of commands.")
     print("Type \"quit\" to quit.")
     print("--------------------")
-    start_server(DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT)
-    start_client(DEFAULT_CLIENT_IP, DEFAULT_CLIENT_PORT)
+    globals.server = server.start_server(DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT)
+    globals.client = client.start_client(DEFAULT_CLIENT_IP, DEFAULT_CLIENT_PORT)
     print("")
     while True:
         process_command(input(""))
