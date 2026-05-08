@@ -3,16 +3,6 @@ from threading import Timer
 from pythonosc.udp_client import SimpleUDPClient
 import globals
 
-def float_range(start, stop, step):
-    if step >= 0:
-        while start < stop:
-            yield start
-            start += step
-    else:
-        while start > stop:
-            yield start
-            start += step
-
 class Client:
     def __init__(self, ip, port):
         self._client = SimpleUDPClient(ip, port)
