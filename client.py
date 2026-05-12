@@ -15,16 +15,20 @@ class Client:
     def set_parameter(self, parameter, value):
         self.send_message("/avatar/parameters/" + parameter, [value])
 
-    def _set_eyeheight_instantly(self, eyeheight, jitter=False):
+    def _set_eyeheight_instantly(self, eyeheight, jitter=False, scaling_id=0):
+        if scaling_id != 0:
+            if globals.scaling_id != scaling_id:
+                return
         if jitter:
             eyeheight = eyeheight * (self._parity + 1) + self._parity
             self._parity = -self._parity
-        self.send_message("/avatar/eyeheight", [eyeheight])
+        self.send_message("/avatar/eyeheight", [float(eyeheight)])
 
     def set_eyeheight(self, target_eyeheight, duration=0):
-        if globals.scaling:
-            return
+        target_eyeheight = min(max(target_eyeheight, globals.MIN_HEIGHT), globals.MAX_HEIGHT)
         globals.target_eyeheight = target_eyeheight
+        scaling_id = globals.scaling_id + 1
+        globals.scaling_id = scaling_id
         if duration > 0 and globals.current_eyeheight != target_eyeheight:
             globals.scaling = True
             height = max(globals.current_eyeheight, globals.MIN_HEIGHT)
@@ -37,12 +41,15 @@ class Client:
                 timer = Timer(
                     i * step_length,
                     self._set_eyeheight_instantly,
-                    args=[height, True])
+                    args=[height],
+                    kwargs={"jitter": True, "scaling_id": scaling_id}
+                    )
                 timer.daemon = True
                 timer.start()
             time.sleep(duration + 0.25)
+        self._set_eyeheight_instantly(target_eyeheight, scaling_id=scaling_id)
+        if globals.scaling_id == scaling_id:
             globals.scaling = False
-        self._set_eyeheight_instantly(target_eyeheight)
 
 def start_client(ip, port):
     client = Client(ip, port)

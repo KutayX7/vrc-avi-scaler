@@ -20,8 +20,6 @@ MAX_HEIGHT = float(config['limits']['MaxHeight'])
 globals.MIN_HEIGHT = MIN_HEIGHT
 globals.MAX_HEIGHT = MAX_HEIGHT
 
-globals.compat_magsscaleadjuster = bool(int(config['compatibility']['MagsScaleAdjuster']))
-
 help_text = """Available commands:
     quit  : Quits the app.
     exit

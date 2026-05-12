@@ -4,7 +4,9 @@ A simple command line tool to control your avatar height/scale on VRChat.
 ## Features
 - Scale your avatar to any size allowed by the world and VRChat.
 - Option to scale instantly, or over a period of time.
-- Partial-compatibility with Mag's Scale Adjuster.
+- Compatibility with third-party scalers:
+  * Full compatibility with Jackal Scaling System.
+  * Partial-compatibility with Mag's Scale Adjuster.
 
 ## Installation
 > [!NOTE]
@@ -38,10 +40,9 @@ If you're already on VRChat before launching this, it is recommended to rejoin t
 
 > [!TIP]
 > Check `config.ini` and `globals.py` for advanced configuration.
-> (Default values are usually the optimal values for a smooth experience.)
 
 ## Issues
 All constructive feedback is welcome.
 
-> **Disclaimer:**
-> This project is neither affiliated with nor endorsed by VRChat.
+## Disclaimer
+> This project is neither affiliated with nor endorsed by VRChat and other avatar scaler creators.
