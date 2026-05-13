@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Application and user data
+data/
+
 # C extensions
 *.so
 
