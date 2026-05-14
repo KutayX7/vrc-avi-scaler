@@ -1,5 +1,4 @@
 import threading
-import configparser
 import time
 
 import globals
@@ -7,18 +6,6 @@ import compat
 import client
 import server
 import scaling_utils
-
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-DEFAULT_SERVER_IP =       config['OSC server']['ip']
-DEFAULT_CLIENT_IP =       config['OSC client']['ip']
-DEFAULT_SERVER_PORT = int(config['OSC server']['port'])
-DEFAULT_CLIENT_PORT = int(config['OSC client']['port'])
-MIN_HEIGHT = float(config['limits']['MinHeight'])
-MAX_HEIGHT = float(config['limits']['MaxHeight'])
-globals.MIN_HEIGHT = MIN_HEIGHT
-globals.MAX_HEIGHT = MAX_HEIGHT
 
 help_text = """Available commands:
     quit  : Quits the app.
@@ -37,15 +24,15 @@ help_text = """Available commands:
     instant    : Makes scaling instant. (default behavior)
     smooth [t] : Makes scaling not instant.
     s            You can also set a duration in seconds as the second argument.
-                 (defaults to 5 seconds if not specified)
+                 (defaults to 3 seconds if not specified)
 
-    fps [rate] : Sets the expected in-game frame-rate.
+    fps <rate> : Sets the expected in-game frame-rate.
                  Since this program can't directly read your in-game frame-rate
                  (at least not yet) it can make bad assumptions
                  which can result in more visual glitches.
                  This commands allows you to tell your in-game frame-rate
-                 so that the program can make better assumptions.
-                 It is recommended to cap your FPS.
+                 to make better decisions.
+                 It is recommended to cap your FPS in-game.
 
 To change your size, just type your desired eye height (in meters).
 Do NOT add unit suffixes! They are not supported, for now."""
@@ -84,8 +71,6 @@ def process_command(full_command):
             print(f"    Jitter: ±{globals.smooth_scaling_jitter_range}")
             if globals.smooth_scaling_jitter_range > 0:
                 print("    Some fake jitter is added to keep more annoying visual glitches at bay.")
-                print("    You can lower/disable this effect in globals.py if it really bothers you.")
-                print("      (Requires restart if you change it)")
         else:
             print("  Smooth scaling is disabled. (Instant scaling mode.)")
         if globals.world_scaling_allowed:
@@ -102,8 +87,8 @@ def process_command(full_command):
         else:
             print("Avatar scaling is currently disabled by the world.")
     elif command == "override" or command == "o":
-        globals.world_min_eyeheight = MIN_HEIGHT
-        globals.world_max_eyeheight = MAX_HEIGHT
+        globals.world_min_eyeheight = globals.MIN_HEIGHT
+        globals.world_max_eyeheight = globals.MAX_HEIGHT
         globals.world_scaling_allowed = True
         print("Forgot the world limits ;)")
         print("You may encounter weird behavior.")
@@ -113,7 +98,7 @@ def process_command(full_command):
         try:
             length = abs(float(tokens[1]))
         except:
-            length = 5.0
+            length = 3.0
         finally:
             if globals.smooth_scaling_duration <= 0:
                 print(f"Enabled smooth scaling.")
@@ -136,6 +121,22 @@ def process_command(full_command):
             print(f"Smooth scaling step frequency set to {frequency}")
         except:
             pass
+    elif command == "jitter":
+        if len(tokens) == 1:
+            if globals.smooth_scaling_jitter_range > 0:
+                globals.smooth_scaling_jitter_range = 0.0
+            else:
+                globals.smooth_scaling_jitter_range = 0.002
+        else:
+            try:
+                jitter_range = abs(float(tokens[1]))
+                globals.smooth_scaling_jitter_range = jitter_range
+            except:
+                pass
+        if globals.smooth_scaling_jitter_range > 0:
+            print(f"Smooth scaling jitter range set to ±{globals.smooth_scaling_jitter_range}")
+        else:
+            print("Smooth scaling jitter disabled.")
     else:
         try:
             desired_height = float(command)
@@ -143,10 +144,10 @@ def process_command(full_command):
             print("Unknown command. You can type \"help\" for a list of commands.")
     if desired_height != globals.current_eyeheight:
         if globals.world_scaling_allowed:
-            if desired_height < MIN_HEIGHT:
-                print(f"Too small! Minimum {MIN_HEIGHT} m.")
-            elif desired_height > MAX_HEIGHT:
-                print(f"Too big! Maximum {MAX_HEIGHT} m.")
+            if desired_height < globals.MIN_HEIGHT:
+                print(f"Too small! Minimum {globals.MIN_HEIGHT} m.")
+            elif desired_height > globals.MAX_HEIGHT:
+                print(f"Too big! Maximum {globals.MAX_HEIGHT} m.")
             else:
                 client.set_eyeheight(desired_height, globals.smooth_scaling_duration)
         else:
@@ -158,8 +159,8 @@ def main():
     print("Type \"help\" to see a list of commands.")
     print("Type \"quit\" to quit.")
     print("--------------------")
-    globals.server = server.start_server(DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT)
-    globals.client = client.start_client(DEFAULT_CLIENT_IP, DEFAULT_CLIENT_PORT)
+    globals.server = server.start_server(globals.osc_server_ip, globals.osc_server_port)
+    globals.client = client.start_client(globals.osc_client_ip, globals.osc_client_port)
     print("")
     while True:
         process_command(input(""))

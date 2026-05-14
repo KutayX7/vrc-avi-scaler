@@ -6,7 +6,7 @@ import globals
 class Client:
     def __init__(self, ip, port):
         self._client = SimpleUDPClient(ip, port)
-        self._parity = globals.smooth_scaling_jitter_range
+        self._parity = 1
         globals.scaling = False
 
     def send_message(self, address, value):
@@ -20,7 +20,8 @@ class Client:
             if globals.scaling_id != scaling_id:
                 return
         if jitter:
-            eyeheight = eyeheight * (self._parity + 1) + self._parity
+            jitter_amount = globals.smooth_scaling_jitter_range * self._parity
+            eyeheight = eyeheight * (jitter_amount + 1) + jitter_amount
             self._parity = -self._parity
         self.send_message("/avatar/eyeheight", [float(eyeheight)])
 

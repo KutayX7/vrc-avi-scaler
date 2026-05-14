@@ -34,7 +34,7 @@ A simple command line tool to control your avatar height/scale on VRChat.
   * `cd vrc-avi-scaler`
 4. Create a virtual environment:
   * `python -m venv .venv`
-  * **WARNING:** Renaming or moving the folder after this point WILL break things.
+  * **WARNING:** Renaming or moving the folder after this point WILL break the virtual environment.
 5. Activate the virtual environment:
   * On Windows, `.venv\Scripts\activate`
   * On Linux, `source .venv/bin/activate`
@@ -46,34 +46,40 @@ There are no automatic updates nor check for updates, yet, so you'll have to upd
 
 Clean (re-)install is recommended as there's currently no backwards compatibilty for the config files. Simply delete the whole `vrc-avi-scaler` folder and follow the installation steps again.
 
+It's recommended to check this README after each update.
+
 ## Usage
 To start the program:
 1. Open your terminal in the same directory as `main.py`.
-2. Activate the virtual environment.
+2. Activate the virtual environment (same as installation step 5).
 3. `python main.py`
 
+Type `help` to see a list of commands.
+
+Please cap your in-game FPS and use the `fps` command after each launch.
+For example, if you set your in-game FPS cap to 50 FPS, use the command `fps 50`.
+
 > [!WARNING]
-> If you're already on VRChat before launching this, it is *recommended* to rejoin the instance (so it can collect accurate info about your avatar and the world).
+> If you're already on VRChat before launching this, it is *recommended* to rejoin the instance (so it can collect accurate info about your avatar, tracking type, and the world).
 
 > [!TIP]
-> Check `config.ini` and `globals.py` for advanced configuration.
+> Check `globals.py` for advanced configuration.
 
 ## Issues
 All constructive feedback is welcome.
 
 ## Q&A
-**Q: I'm in VR and smooth scaling is not "smooth".**
+**Q: Is this safe?**
 
-A: Set `smooth_scaling_jitter_range` to `0.0` in `globals.py` (requires restart).
-   Also use the `fps` command. For example, if you can get 144 FPS in VRChat, type `fps 144`.
+A: You can check the source code. Also, if you're worried about getting moderated for using this, VRChat is unlikely take any moderation action against you as long as you don't abuse it. This program does not use any illegal method.
 
-**Q: Smooth scaling lowers my FPS or cause stutters.**
+**Q: Why does smooth scaling makes my avatar flicker on desktop?**
 
-A: Smooth scaling can be very heavy. Cap your FPS to a comfortable enough level for you and use the `fps` command.
+A: https://feedback.vrchat.com/bug-reports/p/flicker-when-changing-avatar-height
 
 **Q: I don't want to use the `fps` command every time.**
 
-A: If it really bothers you, as a somewhat dirty workaround, set `smooth_scaling_step_frequency` in `globals.py` to 2 or 4 times your FPS cap and never use `fps`/`frequency` commands after.
+A: Set `FPS` in `globals.py` to your FPS cap. (If VRChat makes an update that exposes FPS information over OSC, I will make this automatic.)
 
 ## Disclaimer
 > This project is neither affiliated with nor endorsed by VRChat and other avatar scaler creators.

@@ -56,6 +56,17 @@ def scalefactor_handler(address, *args):
     if isinstance(scale_factor, float):
         globals.current_scale_factor = scale_factor
 
+def vrmode_handler(address, *args):
+    vrmode = args[0]
+    if isinstance(vrmode, int):
+        if vrmode == 1:
+            if not globals.VRMode:
+                print("VR mode has been activated.")
+            globals.VRMode = True
+            globals.smooth_scaling_jitter_range = 0.0
+        elif vrmode == 0:
+            globals.VRMode = False
+
 def custom_scaling_handler(address, *args):
     compat.on_avatar_parameter_change(address[19:], args[0])
 
@@ -66,6 +77,7 @@ def start_server(ip, port):
     server.map("/avatar/eyeheightscalingallowed", scaling_allowed_handler)
     server.map("/avatar/eyeheight", eyeheight_handler)
     server.map("/avatar/parameters/ScaleFactor", scalefactor_handler)
+    server.map("/avatar/parameters/VRMode", vrmode_handler)
     server.map("/avatar/parameters/*", custom_scaling_handler)
     print(f"Started OSC server on {ip}:{port}")
     return server
