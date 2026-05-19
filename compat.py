@@ -28,7 +28,7 @@ def on_avatar_parameter_change(parameter, value):
     if debounce:
         return
 
-    if (parameter.startswith("KtySize") and
+    if (parameter.startswith("KtySize/") and
         parameters.get("KtySize/Enabled", True)):
         # This is for my own OSC scaling system.
         # If you're a scaling system creator,
@@ -44,15 +44,22 @@ def on_avatar_parameter_change(parameter, value):
                 globals.smooth_scaling_duration = value
             case "KtySize/Frequency" if isinstance(value, float) and value > 1:
                 globals.smooth_scaling_step_frequency = value
-            case "KtySize/SetEyeheight" if value:
+            case "KtySize/SetEyeheight" if isinstance(value, bool) and value:
                 target_eyeheight = float(
                     parameters.get("KtySize/TargetEyeheight", current_eyeheight))
                 set_eyeheight(target_eyeheight)
                 set_parameter("KtySize/SetEyeheight", False)
-            case "KtySize/SetScale" if value:
+            case "KtySize/SetEyeheight" if isinstance(value, float) and value > 0:
+                set_eyeheight(value)
+                set_parameter("KtySize/SetEyeheight", False)
+            case "KtySize/SetScale" if isinstance(value, bool) and value:
                 target_scale = float(
                     parameters.get("KtySize/TargetScale", current_scale))
                 target_eyeheight = scaling_utils.scale_to_eyeheight(target_scale)
+                set_eyeheight(target_eyeheight)
+                set_parameter("KtySize/SetScale", False)
+            case "KtySize/SetScale" if isinstance(value, float) and value > 0:
+                target_eyeheight = scaling_utils.scale_to_eyeheight(value)
                 set_eyeheight(target_eyeheight)
                 set_parameter("KtySize/SetScale", False)
             case "KtySize/ScaleRelative" if (
