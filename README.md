@@ -3,15 +3,17 @@ A simple command line tool to control your avatar height/scale on VRChat.
 
 ## Features
 - Scale your avatar to any size allowed by the world and VRChat.
-- Option to scale instantly, or over a period of time.
+- Option to scale instantly, or smoothly over a period of time.
 - Compatibility with third-party scaling systems:
   * Full compatibility with [Jackal Scaling System](https://spacejackal.gumroad.com/l/JackalScaler).
   * Partial-compatibility with [Mag's Scale Adjuster](https://magww.gumroad.com/l/scale).
-- Works on Windows, Linux, Android (Termux), and possibly some other platforms.
+- Should work on Windows, Linux, Quest/Android (via Termux), and possibly on some other platforms.
+  * (But so far I only tested on Linux and Android.)
 
 > [!NOTE]
-> A first-party scaling system is in development now.
-> Sample avatar: https://vrchat.com/home/avatar/avtr_afad73bf-ecfe-460a-b35b-6e77b29304b6
+> A first-party scaling system (the Unity/VCC package) is in development.
+> A sample avatar to try it early: https://vrchat.com/home/avatar/avtr_afad73bf-ecfe-460a-b35b-6e77b29304b6
+> (not feature complete yet but it's usable)
 
 ## Installation
 ### Prerequisites
@@ -64,9 +66,11 @@ Make sure to enable OSC in VRChat!
 > [!TIP]
 > Check `globals.py` for advanced configuration.
 
-## Issues
-All constructive feedback is welcome.
-Please make sure you're using the latest version before opening a new issue.
+## [Issues](https://github.com/KutayX7/vrc-avi-scaler/issues)
+PLEASE GIVE FEEDBACK! That's the biggest support you could give for now. <3
+
+All constructive feedback is welcome. Bug-reports, feature-requests, etc.
+Please make sure you're using the latest version before opening a new issue (if applicable).
 And please avoid making duplicate issues.
 
 ## Q&A
