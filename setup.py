@@ -1,7 +1,6 @@
 import subprocess
 import os
 import sys
-import fs
 from pathlib import Path
 
 venv_path = './.venv'
@@ -72,3 +71,4 @@ if __name__=="__main__":
 		print("Installation complete.")
 	else:
 		print("Installation failed.")
+		sys.exit(-1)

@@ -17,6 +17,22 @@ class Server:
     def map(self, address, callback):
         self._dispatch.map(address, callback)
 
+def set_vrmode(vrmode):
+    if vrmode:
+        if not globals.VRMode:
+            print("Switched to VR mode.")
+        globals.VRMode = True
+    else:
+        if globals.VRMode:
+            print("Switched to non-VR mode.")
+        globals.VRMode = False
+
+def avatar_change_handler(address, *args):
+    set_vrmode(False)
+    print("Avatar has been changed.")
+    if globals.current_scale_factor <= 0:
+        globals.client.refresh_eyeheight()
+
 def eyeheight_min_handler(address, *args):
     height = args[0]
     if isinstance(height, int):
@@ -32,12 +48,15 @@ def eyeheight_max_handler(address, *args):
         globals.world_max_eyeheight = height
 
 def scaling_allowed_handler(address, *args):
-    if args[0] == False:
-        globals.world_scaling_allowed = False
-        print("Avatar scaling has been \033[0;31mdisabled\033[0m.")
-    else:
-        globals.world_scaling_allowed = True
-        print("Avatar scaling has been \033[0;32menabled\033[0m.")
+    world_scaling_allowed = args[0]
+    if isinstance(world_scaling_allowed, bool):
+        if world_scaling_allowed:
+            if not globals.world_scaling_allowed:
+                print("Avatar scaling has been \033[0;32menabled\033[0m.")
+        else:
+            if globals.world_scaling_allowed:
+                print("Avatar scaling has been \033[0;31mdisabled\033[0m.")
+        globals.world_scaling_allowed = world_scaling_allowed
 
 def eyeheight_handler(address, *args):
     height = args[0]
@@ -57,26 +76,32 @@ def scalefactor_handler(address, *args):
         globals.current_scale_factor = scale_factor
 
 def vrmode_handler(address, *args):
-    vrmode = args[0]
-    if isinstance(vrmode, int):
-        if vrmode == 1:
-            if not globals.VRMode:
-                print("VR mode has been activated.")
-            globals.VRMode = True
-            globals.smooth_scaling_jitter_range = 0.0
-        elif vrmode == 0:
-            globals.VRMode = False
+    set_vrmode(not not args[0])
+
+def trackingtype_handler(address, *args):
+    trackingtype = args[0]
+    if isinstance(trackingtype, int):
+        if trackingtype > 3:
+            set_vrmode(True)
+        globals.TrackingType = trackingtype
 
 def custom_scaling_handler(address, *args):
     compat.on_avatar_parameter_change(address[19:], args[0])
 
+def osc_debug_handler(address, *args):
+    if globals.osc_debug_log:
+        print(f"[DEBUG] OSC: {address} {args}")
+
 def start_server(ip, port):
     server = Server(ip, port)
+    server.map("/*", osc_debug_handler)
+    server.map("/avatar/change", avatar_change_handler)
     server.map("/avatar/eyeheightmin", eyeheight_min_handler)
     server.map("/avatar/eyeheightmax", eyeheight_max_handler)
     server.map("/avatar/eyeheightscalingallowed", scaling_allowed_handler)
     server.map("/avatar/eyeheight", eyeheight_handler)
     server.map("/avatar/parameters/ScaleFactor", scalefactor_handler)
+    server.map("/avatar/parameters/TrackingType", trackingtype_handler)
     server.map("/avatar/parameters/VRMode", vrmode_handler)
     server.map("/avatar/parameters/*", custom_scaling_handler)
     print(f"Started OSC server on {ip}:{port}")
