@@ -72,3 +72,4 @@ if __name__=="__main__":
 		print("Installation complete.")
 	else:
 		print("Installation failed.")
+		sys.exit(-1)

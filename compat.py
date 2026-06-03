@@ -2,8 +2,6 @@ import time
 import globals
 import scaling_utils
 
-parameters = {}
-
 debounce = False
 
 def set_eyeheight(height, instant=False):
@@ -12,7 +10,11 @@ def set_eyeheight(height, instant=False):
     else:
         globals.client.set_eyeheight(height, globals.smooth_scaling_duration)
 
+def get_parameter(parameter, default=None):
+    return globals.avatar_parameters.get(parameter, default)
+
 def set_parameter(parameter, value):
+    globals.avatar_parameters[parameter] = value
     globals.client.set_parameter(parameter, value)
 
 def scale_by_factor(factor, instant=False):
@@ -23,18 +25,22 @@ def scale_by_increment(increment, instant=False):
 
 def on_avatar_parameter_change(parameter, value):
     global debounce
-    parameters[parameter] = value
+
+    if globals.compat_killswitch:
+        return
+
+    globals.avatar_parameters[parameter] = value
 
     if debounce:
         return
 
     if (parameter.startswith("KtySize/") and
-        parameters.get("KtySize/Enabled", True)):
+        get_parameter("KtySize/Enabled", True)):
         # This is for my own OSC scaling system.
         # If you're a scaling system creator,
         # feel free to add compatibility. :)
-        # All parameters mentioned here are animator only,
-        # don't add these to avatar parameters!
+        # ALL parameters mentioned here are ANIMATOR ONLY,
+        # don't add these to VRChat avatar parameters!
         # Use other parameters to drive these.
         # NOT STABLE YET!
         current_eyeheight = globals.current_eyeheight
@@ -46,7 +52,7 @@ def on_avatar_parameter_change(parameter, value):
                 globals.smooth_scaling_step_frequency = value
             case "KtySize/SetEyeheight" if isinstance(value, bool) and value:
                 target_eyeheight = float(
-                    parameters.get("KtySize/TargetEyeheight", current_eyeheight))
+                    get_parameter("KtySize/TargetEyeheight", current_eyeheight))
                 set_eyeheight(target_eyeheight)
                 set_parameter("KtySize/SetEyeheight", False)
             case "KtySize/SetEyeheight" if isinstance(value, float) and value > 0:
@@ -54,7 +60,7 @@ def on_avatar_parameter_change(parameter, value):
                 set_parameter("KtySize/SetEyeheight", False)
             case "KtySize/SetScale" if isinstance(value, bool) and value:
                 target_scale = float(
-                    parameters.get("KtySize/TargetScale", current_scale))
+                    get_parameter("KtySize/TargetScale", current_scale))
                 target_eyeheight = scaling_utils.scale_to_eyeheight(target_scale)
                 set_eyeheight(target_eyeheight)
                 set_parameter("KtySize/SetScale", False)
@@ -82,10 +88,10 @@ def on_avatar_parameter_change(parameter, value):
         if parameter == "ScaleOverlay" and value:
             # Disables incremental scaling, which I couldn't get to work reliably
             set_parameter("ScaleOverlay", False)
-        current_scale = parameters.get("CurrentScale", 73)
+        current_scale = get_parameter("CurrentScale", 73)
         if (parameter == "NextScale" and
-            (parameters.get("ReadyReset", False) or
-            parameters.get("NoReadyReset", False)) and
+            (get_parameter("ReadyReset", False) or
+            get_parameter("NoReadyReset", False)) and
             value > 0 and value != current_scale):
             debounce = True
             target_scale = 0.01 * (1.0651169 ** value)
