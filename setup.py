@@ -3,17 +3,17 @@ import os
 import sys
 from pathlib import Path
 
-venv_path = './.venv'
-python_name = 'python'
+venv_path = Path('.') / '.venv'
 start_script_name = 'start.sh'
+python_name = 'python3'
 
 print(f"[INFO] Detected OS: {os.name}/{sys.platform}")
 
 match os.name:
 	case 'nt': # Windows
-		venv_name = '.\\.venv'
-	case 'posix': # Linux
-		python_name = 'python3'
+		python_name = 'python'
+	case 'posix': # Linux | macOS | Android
+		pass
 	case _:
 		raise Exception("unknown/unsupported operating system")
 
@@ -46,9 +46,8 @@ def make_start_script_executable():
 
 def create_venv():
 	print("[INFO] Checking for virtual environment...")
-	venv = Path(venv_path)
-	if venv.exists():
-		if venv.is_dir():
+	if venv_path.exists():
+		if venv_path.is_dir():
 			print("[INFO] Found a virtual environment.")
 			return 0
 		else:
