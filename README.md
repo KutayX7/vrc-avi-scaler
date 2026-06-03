@@ -90,7 +90,7 @@ A: You can check the source code. The most dangerous parts are the dependencies 
 A: It's probably related to these VRChat bugs:
   * https://feedback.vrchat.com/bug-reports/p/flicker-when-changing-avatar-height
   * https://feedback.vrchat.com/bug-reports/p/jittering-view-effect-when-lerping-osc-avatar-scaling
-  (I tried my best to mitigate them but the experience is not perfect.)
+  * (I tried my best to mitigate them but the experience is not perfect.)
 
 ## Disclaimer
 > This project is neither affiliated with nor endorsed by VRChat nor by other avatar scaling system creators.
