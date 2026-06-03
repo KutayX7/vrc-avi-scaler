@@ -1,7 +1,6 @@
 import subprocess
 import os
 import sys
-import fs
 from pathlib import Path
 
 venv_path = './.venv'
