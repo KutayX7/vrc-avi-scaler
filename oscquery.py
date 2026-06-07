@@ -87,6 +87,25 @@ class OSCQueryHandler(BaseHTTPRequestHandler):
     def log_message(self, format: Any, *args: Any) -> None:
         pass
 
+def _is_local(address: str) -> bool:
+    match address:
+        case "localhost":
+            return True
+        case "127.0.0.1":
+            return True
+        case "127.0.1.1":
+            return True
+        case "::1":
+            return True
+    return False
+
+def _select_prefer_non_local(*addresses: str) -> str:
+    preferred: str = addresses[0]
+    for address in addresses:
+        if not _is_local(address):
+            preferred = address
+    return preferred
+
 class OSCQueryListener(ServiceListener):
     def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         pass
@@ -112,7 +131,10 @@ class OSCQueryListener(ServiceListener):
                 if osc_address:
                     client.reconnect(*osc_address)
                 else:
-                    client.reconnect(address, globals.osc_client_port)
+                    address = _select_prefer_non_local(
+                        address, globals.osc_client_ip
+                    )
+                    client.reconnect(address, client.port)
 
 def start_listener() -> None:
     oscquery_listener = OSCQueryListener()

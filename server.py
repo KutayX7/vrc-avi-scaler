@@ -8,12 +8,18 @@ from simple_types import Any, Callback
 class Server:
     def __init__(self, ip: str, port: int):
         dispatch = dispatcher.Dispatcher()
+        dispatch.map("*", self._filter, needs_reply_address=True)
         server = osc_server.ThreadingOSCUDPServer((ip, port), dispatch)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         self._dispatch = dispatch
         self._server = server
         self._thread = thread
+
+    def _filter(self, client_address: str, address: str, *args: Any) -> None:
+        ip = client_address[0]
+        if ip != globals.osc_detected_VRChat_ip:
+            globals.osc_detected_VRChat_ip = ip
 
     def map(self, address: str, callback: Callback) -> None:
         self._dispatch.map(address, callback)

@@ -79,6 +79,11 @@ def process_command(full_command: str) -> None:
             globals.VRMode = False
         case "nocompat" | "pure":
             globals.compat_killswitch = True
+        case "client_fix":
+            detected_ip: str = globals.osc_detected_VRChat_ip
+            current_ip: str = client.ip
+            if detected_ip and detected_ip != current_ip:
+                client.reconnect(detected_ip, client.port)
         case "osc_debug":
             globals.osc_debug_log = not globals.osc_debug_log
             if globals.osc_debug_log:

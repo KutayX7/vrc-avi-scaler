@@ -8,10 +8,14 @@ from simple_types import Height, ParameterValue, Any
 class Client:
     def __init__(self, ip: str, port: int):
         self._client = SimpleUDPClient(ip, port)
+        self.ip = ip
+        self.port = port
         globals.scaling = False
 
     def reconnect(self, ip: str, port: int) -> None:
         self._client = SimpleUDPClient(ip, port)
+        self.ip = ip
+        self.port = port
         print(f"OSC client address changed to {ip}:{port}")
 
     def send_message(self, address: str, value: Any) -> None:
