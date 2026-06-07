@@ -134,6 +134,8 @@ class OSCQueryListener(ServiceListener):
                     address = _select_prefer_non_local(
                         address, globals.osc_client_ip
                     )
+                    if _is_local(address):
+                        globals.auto_apply_client_fix = True
                     client.reconnect(address, client.port)
 
 def start_listener() -> None:

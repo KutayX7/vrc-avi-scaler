@@ -20,6 +20,11 @@ class Server:
         ip = client_address[0]
         if ip != globals.osc_detected_VRChat_ip:
             globals.osc_detected_VRChat_ip = ip
+            if globals.auto_apply_client_fix:
+                client = globals.client
+                if client:
+                    globals.auto_apply_client_fix = False
+                    client.reconnect(ip, client.port)
 
     def map(self, address: str, callback: Callback) -> None:
         self._dispatch.map(address, callback)
