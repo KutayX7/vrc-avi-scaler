@@ -3,9 +3,10 @@ from pythonosc import dispatcher
 from pythonosc import osc_server
 import globals
 import compat
+from simple_types import Any, Callback
 
 class Server:
-    def __init__(self, ip, port):
+    def __init__(self, ip: str, port: int):
         dispatch = dispatcher.Dispatcher()
         server = osc_server.ThreadingOSCUDPServer((ip, port), dispatch)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -14,10 +15,10 @@ class Server:
         self._server = server
         self._thread = thread
 
-    def map(self, address, callback):
+    def map(self, address: str, callback: Callback) -> None:
         self._dispatch.map(address, callback)
 
-def set_vrmode(vrmode):
+def set_vrmode(vrmode: bool) -> None:
     if vrmode:
         if not globals.VRMode:
             print("Switched to VR mode.")
@@ -27,27 +28,27 @@ def set_vrmode(vrmode):
             print("Switched to non-VR mode.")
         globals.VRMode = False
 
-def avatar_change_handler(address, *args):
+def avatar_change_handler(address: str, *args: tuple[Any]) -> None:
     set_vrmode(False)
     print("Avatar has been changed.")
     if globals.current_scale_factor <= 0:
         globals.client.refresh_eyeheight()
 
-def eyeheight_min_handler(address, *args):
+def eyeheight_min_handler(address: str, *args: tuple[Any]) -> None:
     height = args[0]
     if isinstance(height, int):
         height = float(height)
     if isinstance(height, float):
         globals.world_min_eyeheight = height
 
-def eyeheight_max_handler(address, *args):
+def eyeheight_max_handler(address: str, *args: tuple[Any]) -> None:
     height = args[0]
     if isinstance(height, int):
         height = float(height)
     if isinstance(height, float):
         globals.world_max_eyeheight = height
 
-def scaling_allowed_handler(address, *args):
+def scaling_allowed_handler(address: str, *args: tuple[Any]) -> None:
     world_scaling_allowed = args[0]
     if isinstance(world_scaling_allowed, bool):
         if world_scaling_allowed:
@@ -58,41 +59,43 @@ def scaling_allowed_handler(address, *args):
                 print("Avatar scaling has been \033[0;31mdisabled\033[0m.")
         globals.world_scaling_allowed = world_scaling_allowed
 
-def eyeheight_handler(address, *args):
+def eyeheight_handler(address: str, *args: tuple[Any]) -> None:
     height = args[0]
     if isinstance(height, int):
         height = float(height)
-    if isinstance(height, float):
+    if isinstance(height, float) and height > 0.0:
         if (globals.current_eyeheight != height and
             (height == globals.target_eyeheight or (not globals.scaling))):
             print("New eye height: " + str(height) + " m")
         globals.current_eyeheight = height
 
-def scalefactor_handler(address, *args):
-    scale_factor = args[0]
+def scalefactor_handler(address: str, *args: tuple[Any]) -> None:
+    scale_factor: Any = args[0]
     if isinstance(scale_factor, int):
-        scale_factor = float(height)
+        scale_factor = float(scale_factor)
     if isinstance(scale_factor, float):
         globals.current_scale_factor = scale_factor
 
-def vrmode_handler(address, *args):
+def vrmode_handler(address: str, *args: tuple[Any]) -> None:
     set_vrmode(not not args[0])
 
-def trackingtype_handler(address, *args):
-    trackingtype = args[0]
+def trackingtype_handler(address: str, *args: tuple[Any]) -> None:
+    trackingtype: Any = args[0]
     if isinstance(trackingtype, int):
         if trackingtype > 3:
             set_vrmode(True)
-        globals.TrackingType = trackingtype
+        globals.tracking_type = trackingtype
 
-def custom_scaling_handler(address, *args):
-    compat.on_avatar_parameter_change(address[19:], args[0])
+def custom_scaling_handler(address: str, *args: tuple[Any]) -> None:
+    value = args[0]
+    if isinstance(value, (bool, int, float)):
+        compat.on_avatar_parameter_change(address[19:], value)
 
-def osc_debug_handler(address, *args):
+def osc_debug_handler(address: str, *args: tuple[Any]) -> None:
     if globals.osc_debug_log:
         print(f"[DEBUG] OSC: {address} {args}")
 
-def start_server(ip, port):
+def start_server(ip: str, port: int) -> Server:
     server = Server(ip, port)
     server.map("/*", osc_debug_handler)
     server.map("/avatar/change", avatar_change_handler)

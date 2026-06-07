@@ -1,21 +1,26 @@
-import time
+from time import sleep
 from threading import Timer
 from pythonosc.udp_client import SimpleUDPClient
 import globals
-from scaling_utils import quantize_height
+from scaling_utils import quantize_height, clamp_eyeheight
+from simple_types import Height, ParameterValue, Any
 
 class Client:
-    def __init__(self, ip, port):
+    def __init__(self, ip: str, port: int):
         self._client = SimpleUDPClient(ip, port)
         globals.scaling = False
 
-    def send_message(self, address, value):
+    def reconnect(self, ip: str, port: int) -> None:
+        self._client = SimpleUDPClient(ip, port)
+        print(f"OSC client address changed to {ip}:{port}")
+
+    def send_message(self, address: str, value: Any) -> None:
         self._client.send_message(address, value)
 
-    def set_parameter(self, parameter, value):
+    def set_parameter(self, parameter: str, value: ParameterValue) -> None:
         self.send_message("/avatar/parameters/" + parameter, [value])
 
-    def _set_eyeheight_instantly(self, eyeheight, adjust=False, scaling_id=0):
+    def _set_eyeheight_instantly(self, eyeheight: Height, adjust:bool = False, scaling_id:int = 0) -> None:
         if scaling_id != 0:
             if globals.scaling_id != scaling_id:
                 return
@@ -26,8 +31,8 @@ class Client:
                 eyeheight += 0.00125
         self.send_message("/avatar/eyeheight", [float(eyeheight)])
 
-    def refresh_eyeheight(self, delay=1):
-        time.sleep(delay)
+    def refresh_eyeheight(self, delay: float = 1.0) -> None:
+        sleep(delay)
         current_eyeheight = globals.current_eyeheight
         if current_eyeheight <= 0:
             return
@@ -38,9 +43,9 @@ class Client:
         if current_eyeheight < 1:
             temp_eyeheight += 0.003
         self._set_eyeheight_instantly(temp_eyeheight)
-        time.sleep(0.1)
+        sleep(0.1)
         self._set_eyeheight_instantly(current_eyeheight)
-        time.sleep(0.2)
+        sleep(0.2)
         print("Height check complete.")
         if globals.current_scale_factor > 0:
             print("Result: SUCCESS")
@@ -50,14 +55,14 @@ class Client:
             print(f"Retrying in {delay} seconds...")
             self.refresh_eyeheight(delay)
 
-    def set_eyeheight(self, target_eyeheight, duration=0):
-        target_eyeheight = min(max(target_eyeheight, globals.MIN_HEIGHT), globals.MAX_HEIGHT)
+    def set_eyeheight(self, target_eyeheight: Height, duration: float = 0.0) -> None:
+        target_eyeheight = clamp_eyeheight(target_eyeheight)
         globals.target_eyeheight = target_eyeheight
         scaling_id = globals.scaling_id + 1
         globals.scaling_id = scaling_id
-        if duration > 0 and globals.current_eyeheight != target_eyeheight:
+        if duration > 0.0 and globals.current_eyeheight != target_eyeheight:
             globals.scaling = True
-            height = max(globals.current_eyeheight, globals.MIN_HEIGHT)
+            height = clamp_eyeheight(globals.current_eyeheight)
             step_length = 1 / globals.smooth_scaling_step_frequency
             num_steps = duration / step_length
             geometric_difference = target_eyeheight / height
@@ -73,12 +78,12 @@ class Client:
                     )
                 timer.daemon = True
                 timer.start()
-            time.sleep(duration + 0.25)
+            sleep(duration + 0.25)
         self._set_eyeheight_instantly(target_eyeheight, scaling_id=scaling_id)
         if globals.scaling_id == scaling_id:
             globals.scaling = False
 
-def start_client(ip, port):
+def start_client(ip: str, port: int) -> Client:
     client = Client(ip, port)
     print(f"Started OSC client on {ip}:{port}")
     return client

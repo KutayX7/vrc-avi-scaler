@@ -1,22 +1,26 @@
 import math
 import globals
+from simple_types import Height, ScaleFactor
 
-# returns the eyeheight when scale = 1
-def get_base_eyeheight():
-    current_scale_factor = globals.current_scale_factor
-    if current_scale_factor == 0:
-        return 0
+def clamp_float(value: float, a: float, b: float) -> float:
+    return min(max(value, a), b)
+
+# returns the eyeheight when ScaleFactor = 1
+def get_base_eyeheight() -> Height:
+    current_scale_factor: ScaleFactor = globals.current_scale_factor
+    if current_scale_factor <= 0.0:
+        return 0.0
     return globals.current_eyeheight / current_scale_factor
 
-def scale_to_eyeheight(scale):
+def scale_to_eyeheight(scale: ScaleFactor) -> Height:
     return get_base_eyeheight() * scale
 
-def eyeheight_to_scale(eyeheight):
+def eyeheight_to_scale(eyeheight: Height) -> ScaleFactor:
     return eyeheight / get_base_eyeheight()
 
-def parse_to_meters(text, default, print=print):
-    number = ""
-    unit = ""
+def parse_to_meters(text: str, default: Height) -> Height:
+    number: str = ""
+    unit: str = ""
     for char in text:
         if char in "0123456789.":
             number += char
@@ -26,7 +30,7 @@ def parse_to_meters(text, default, print=print):
         raise Exception("Not a number.")
     if number.endswith('.'):
         number = number[:-1]
-    height = float(number)
+    height: float = float(number)
     unit = unit.lower()
     match unit:
         case '':
@@ -54,6 +58,23 @@ def parse_to_meters(text, default, print=print):
             height = default
     return height
 
-def quantize_height(height):
+def quantize_height(height: Height) -> str:
     height = float(height)
     return str(math.floor(height*2000)/2000)
+
+def is_valid_float(value: float) -> bool:
+    if value != value: # check for NaN
+        return False
+    if abs(value) == float('inf'): # check for -/+inf
+        return False
+    return True
+
+def clamp_eyeheight(height: Height) -> Height:
+    return clamp_float(
+        height,
+        globals.MIN_EYEHEIGHT,
+        globals.MAX_EYEHEIGHT
+    )
+
+def is_eyeheight_in_valid_range(height: Height) -> bool:
+    return height == clamp_eyeheight(height)

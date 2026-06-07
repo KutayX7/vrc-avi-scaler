@@ -12,7 +12,7 @@ class ConfigReadResult(Enum):
     ACCESS_DENIED = 2
     CORRUPTED = 3
 
-def reset_config_file():
+def reset_config_file() -> None:
     newline = '\n'
     if os.name == "nt":
         newline = '\r\n'
@@ -30,6 +30,8 @@ def reset_config_file():
         f"[osc.server]",
         f"ip   = '{globals.osc_server_ip}'",
         f"port = {globals.osc_server_port}",
+        f"[oscquery]",
+        f"enabled   = {str(globals.oscquery_enabled).lower()}",
         f"",
         f"# Compatibility with third-party scaling systems",
         f"[compat]",
@@ -46,7 +48,7 @@ def reset_config_file():
         with CONFIG_FILE_PATH.open('x') as f:
             f.write(template)
 
-def save_config():
+def save_config() -> None:
     print("Saving config...")
     reset_config_file()
     print("Saved config.")
@@ -58,8 +60,7 @@ def read_config() -> ConfigReadResult:
         data = None
         try:
             data = tomllib.load(f)
-        except e:
-            print(e)
+        except:
             return ConfigReadResult.CORRUPTED
 
         globals.FPS = float(data.get("fps", globals.FPS))
@@ -67,12 +68,14 @@ def read_config() -> ConfigReadResult:
         globals.save_config_on_exit = bool(data.get("autosave", globals.save_config_on_exit))
 
         osc = data.get("osc", dict())
+        oscquery = data.get("oscquery", dict())
         client = osc.get("client", dict())
         server = osc.get("server", dict())
         globals.osc_client_ip = client.get("ip", globals.osc_client_ip)
         globals.osc_client_port = client.get("port", globals.osc_client_port)
         globals.osc_server_ip = server.get("ip", globals.osc_server_ip)
         globals.osc_server_port = server.get("port", globals.osc_server_port)
+        globals.oscquery_enabled = oscquery.get("enabled", globals.oscquery_enabled)
 
         compat = data.get("compat", dict())
         globals.compat_magsscaleadjuster = compat.get("Mag's Scale Adjuster", globals.compat_magsscaleadjuster)

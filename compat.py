@@ -1,32 +1,56 @@
-import time
+from time import sleep
 import globals
-import scaling_utils
+from scaling_utils import scale_to_eyeheight, get_base_eyeheight, is_valid_float
+from simple_types import Any, Height, ScaleFactor, ParameterValue
 
-debounce = False
+debounce: bool = False
 
-def set_eyeheight(height, instant=False):
+def set_eyeheight(height: float, instant: bool = False) -> None:
     if instant:
         globals.client.set_eyeheight(height, 0)
     else:
         globals.client.set_eyeheight(height, globals.smooth_scaling_duration)
 
-def get_parameter(parameter, default=None):
-    return globals.avatar_parameters.get(parameter, default)
+def get_parameter(parameter: str) -> ParameterValue | None:
+    return globals.avatar_parameters.get(parameter)
 
-def set_parameter(parameter, value):
+def set_parameter(parameter: str, value: ParameterValue) -> None:
     globals.avatar_parameters[parameter] = value
     globals.client.set_parameter(parameter, value)
 
-def scale_by_factor(factor, instant=False):
+def get_bool(parameter: str, default: bool = False) -> bool:
+    value = get_parameter(parameter)
+    if type(value) is bool:
+        return value
+    else:
+        return default
+
+def get_int(parameter: str, default: int = 0) -> int:
+    value = get_parameter(parameter)
+    if type(value) is int:
+        return value
+    return default
+
+def get_float(parameter: str, default: float = 0.0) -> float:
+    value = get_parameter(parameter)
+    if type(value) is float:
+        return value
+    return default
+
+def scale_by_factor(factor: float, instant: bool = False) -> None:
     set_eyeheight(globals.current_eyeheight * factor, instant)
 
-def scale_by_increment(increment, instant=False):
+def scale_by_increment(increment: float, instant: bool = False) -> None:
     set_eyeheight(globals.current_eyeheight + increment, instant)
 
-def on_avatar_parameter_change(parameter, value):
+def on_avatar_parameter_change(parameter: str, value: ParameterValue) -> None:
     global debounce
 
     if globals.compat_killswitch:
+        return
+
+    if (isinstance(value, float) and
+        not is_valid_float(value)):
         return
 
     globals.avatar_parameters[parameter] = value
@@ -35,49 +59,48 @@ def on_avatar_parameter_change(parameter, value):
         return
 
     if (parameter.startswith("KtySize/") and
-        get_parameter("KtySize/Enabled", True)):
+        get_bool("KtySize/Enabled", True)):
         # This is for my own OSC scaling system.
         # If you're a scaling system creator,
         # feel free to add compatibility. :)
-        # ALL parameters mentioned here are ANIMATOR ONLY,
-        # don't add these to VRChat avatar parameters!
-        # Use other parameters to drive these.
+        # ALL FLOAT parameters mentioned here are ANIMATOR ONLY,
+        # don't add them to VRChat avatar parameters!
+        # Use other parameters to drive them.
         # NOT STABLE YET!
         current_eyeheight = globals.current_eyeheight
         current_scale = globals.current_scale_factor
-        match parameter:
-            case "KtySize/Duration" if isinstance(value, float):
-                globals.smooth_scaling_duration = value
-            case "KtySize/Frequency" if isinstance(value, float) and value > 1:
-                globals.smooth_scaling_step_frequency = value
-            case "KtySize/SetEyeheight" if isinstance(value, bool) and value:
-                target_eyeheight = float(
-                    get_parameter("KtySize/TargetEyeheight", current_eyeheight))
+        match parameter[8:]:
+            case "Duration" if isinstance(value, float):
+                globals.smooth_scaling_duration = abs(value)
+            case "Frequency" if isinstance(value, float) and value > 1:
+                globals.smooth_scaling_step_frequency = abs(value)
+            case "SetEyeheight" if isinstance(value, bool) and value:
+                target_eyeheight = get_float("KtySize/TargetEyeheight", current_eyeheight)
                 set_eyeheight(target_eyeheight)
                 set_parameter("KtySize/SetEyeheight", False)
-            case "KtySize/SetEyeheight" if isinstance(value, float) and value > 0:
+            case "SetEyeheight" if isinstance(value, float) and value > 0:
                 set_eyeheight(value)
-                set_parameter("KtySize/SetEyeheight", False)
-            case "KtySize/SetScale" if isinstance(value, bool) and value:
-                target_scale = float(
-                    get_parameter("KtySize/TargetScale", current_scale))
-                target_eyeheight = scaling_utils.scale_to_eyeheight(target_scale)
+                set_parameter("KtySize/SetEyeheight", 0.0)
+            case "SetScale" if isinstance(value, bool) and value:
+                target_scale = get_float("KtySize/TargetScale", current_scale)
+                target_eyeheight = scale_to_eyeheight(target_scale)
                 set_eyeheight(target_eyeheight)
                 set_parameter("KtySize/SetScale", False)
-            case "KtySize/SetScale" if isinstance(value, float) and value > 0:
-                target_eyeheight = scaling_utils.scale_to_eyeheight(value)
+            case "SetScale" if isinstance(value, float) and value > 0:
+                target_eyeheight = scale_to_eyeheight(value)
                 set_eyeheight(target_eyeheight)
-                set_parameter("KtySize/SetScale", False)
-            case "KtySize/ScaleRelative" if (
+                set_parameter("KtySize/SetScale", 0.0)
+            case "ScaleRelative" if (
                 isinstance(value, float) and value != 1.0 and value > 0):
                 scale_by_factor(value)
                 set_parameter("KtySize/ScaleRelative", 1.0)
-            case "KtySize/ScaleIncrement" if (
+            case "ScaleIncrement" if (
                 isinstance(value, float) and value != 0.0):
                 scale_by_increment(value)
                 set_parameter("KtySize/ScaleIncrement", 0.0)
-            case "KtySize/Reset" if value:
-                set_eyeheight(scaling_utils.get_base_eyeheight())
+            case "Reset" if (
+                isinstance(value, bool) and value):
+                set_eyeheight(get_base_eyeheight())
                 set_parameter("KtySize/Reset", False)
             case _:
                 pass
@@ -88,20 +111,20 @@ def on_avatar_parameter_change(parameter, value):
         if parameter == "ScaleOverlay" and value:
             # Disables incremental scaling, which I couldn't get to work reliably
             set_parameter("ScaleOverlay", False)
-        current_scale = get_parameter("CurrentScale", 73)
+        current_scale = get_int("CurrentScale", 73)
         if (parameter == "NextScale" and
-            (get_parameter("ReadyReset", False) or
-            get_parameter("NoReadyReset", False)) and
+            (get_bool("ReadyReset") or
+            get_bool("NoReadyReset")) and
             value > 0 and value != current_scale):
             debounce = True
             target_scale = 0.01 * (1.0651169 ** value)
-            target_eyeheight = scaling_utils.scale_to_eyeheight(target_scale)
+            target_eyeheight = scale_to_eyeheight(target_scale)
             set_eyeheight(target_eyeheight, current_scale != 73)
             set_parameter("CurrentScale", value)
             set_parameter("NextScale", value)
-            time.sleep(0.2)
+            sleep(0.2)
             set_parameter("NextScale", value)
-            time.sleep(0.2)
+            sleep(0.2)
             debounce = False
             # Yes, every lne is needed.
 
@@ -148,7 +171,7 @@ def on_avatar_parameter_change(parameter, value):
             case "JackalOSCScale" if (isinstance(value, int) and
                 value >= 0 and value <= 38):
                 heights = [
-                    scaling_utils.get_base_eyeheight(),
+                    get_base_eyeheight(),
                     0.01, 0.02, 0.05, 0.1, 0.2, 0.4, 0.6, 0.8,
                     2.0, 2.5, 3.0, 4.0, 5.0,
                     7.5, 10.0, 12.5, 15.0, 20.0, 25.0, 30.0,
