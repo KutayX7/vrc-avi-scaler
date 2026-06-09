@@ -57,3 +57,4 @@ oscquery_service: Any = None
 oscquery_http_server: Any = None
 osc_detected_VRChat_ip: str = ""
 auto_apply_client_fix: bool = False
+vrmode_lock: bool = False

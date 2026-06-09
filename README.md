@@ -6,17 +6,19 @@ A simple tool for advanced control of your avatar scale on VRChat.
 
 - Uses OSC to communicate with VRChat.
 - Scale your avatar to any size allowed by the world and VRChat.
+  * Unless restricted by the world, 1cm - 10km.
 - Option to scale instantly, or smoothly over a period of time.
 - Compatibility with third-party scaling systems:
   * Full compatibility with [Jackal Scaling System](https://spacejackal.gumroad.com/l/JackalScaler).
   * Partial-compatibility with [Mag's Scale Adjuster](https://magww.gumroad.com/l/scale).
   * [OpenVRCScaler](https://github.com/SkyeCA/OpenVRCScaler) (coming soon)
   * [SizeOSC](https://anmeire.gumroad.com/l/sizeosc) (considering)
-  * (More to be added.)
-- Should work on Windows, Linux, macOS, Android/Quest (via Termux), and possibly on some other platforms.
+  * (More to be added as time goes on.)
+- Should work on Windows, Linux, macOS, Android/Quest (via Termux), and possibly on some other posix platforms.
   * But so far I only tested on Linux and Android.
-- You can run VRChat and this program on separate devices.
+- If you want to, you can run VRChat and this program on separate devices.
   * Automatic connection with OSCQuery by default.
+  * Includes automatic workarounds for the Windows VRChat OSCQuery issue.
 - Various commands, see [all commands](#all-commands).
 
 > [!NOTE]
@@ -99,16 +101,23 @@ You can either do a clean installation (delete the whole `vrc-avi-scaler` folder
 
 Please check this README after each update.
 
+> [!WARNING]
+> If you can't run the program after changes to your environment (system updates, python updates, directory changes), you need to run the `setup.py` script again. If that doesn't work, run the `update.py` script. If that doesn't work either, make a clean installation.
+
 ## Usage
 
 To start the program, run the start script:
   * On Windows, run the `start_windows.bat` script (you can double click it).
   * On Linux, run the `start.sh` script in your terminal.
+    * Method varies from system to system.
 
-Make sure to enable OSC in VRChat!
+Make sure to enable OSC in VRChat! (Either in settings or in Action Menu > Options > OSC)
 
 > [!WARNING]
 > If you're already on VRChat before launching this or turning on the OSC, please reload your avatar (so it can collect accurate info about your avatar, tracking type, and the world).
+
+> [!WARNING]
+> While the OSCQuery feature is enabled (default), you should not have multiple instances of VRChat (with OSC enabled) running on the same network. They may confuse the program in bizarre ways.
 
 > [!TIP]
 > If you have issues with smooth scaling, limit your in-game FPS and use the `fps` command.
@@ -118,7 +127,7 @@ For example, if you set your in-game FPS limit to 120 FPS, use the command `fps 
 > Check `data/config.toml` for advanced configuration. If it doesn't exist, it will be generated when the program runs. You most probably never have to touch it though.
 
 > [!TIP]
-> By default, the config is not saved automatically. You can use the `autosave` command to make the config save automatically on exit.
+> By default, runtime changes to the config (e.g. `fps`) are not saved automatically. You can use the `autosave` command to make the config save automatically on exit.
 
 ## [Issues](https://github.com/KutayX7/vrc-avi-scaler/issues)
 
@@ -138,7 +147,7 @@ A: You can check the source code. The most dangerous parts are the dependencies 
 
 **Q: Does it work on Android or Quest 2/3?**
 
-A: If you're playing on Android/Quest it is recommended to run the app on a separate device. They should be able to connect automatically as long as they are on the same Wi-Fi network.
+A: Yes. But. If you're playing on Android/Quest, it is recommended to run the app on a separate device. They should be able to connect automatically as long as they are on the same Wi-Fi network. Running it on the same Android device may result in reduced functionality unless configured properly.
 
 **Q: Why does smooth scaling make my avatar weird?**
 
@@ -150,6 +159,7 @@ A: It's probably related to these VRChat bugs:
 **Q: Why not release packages/executables?**
 
 A: This way felt more convenient to me and it makes it easy to update. You can use the `update.py` script to update the app easily once installed, and it should work on forks too without any modifications needed.
+If you can, feel free to package it yourself but please put a link to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
 
 **Q: Any plans for a GUI?**
 
@@ -161,7 +171,7 @@ A: This program is designed with compatibility in mind so open an issue about it
 
 **Q: Can I use other OSC apps along with this?**
 
-A: Yes.
+A: Yes. But if it's another OSC scaling app, you may want to use the `nocompat` command to prevent any race conditions during usage.
 
 ## All commands
 
@@ -173,6 +183,7 @@ A: Yes.
   - Not saved. Disabled by default.
 - `help` Shows some of the most useful commands.
 - `exit` Exits the app. Saves the config if `autosave` is on.
+  - Short version: `q`
 - `framerate <fps>` Sets the expected FPS.
   - Short version: `fps <fps>`
   - This also resets the `frequency`!
@@ -189,9 +200,13 @@ A: Yes.
   - Short versions: `norm`, `base`
 - `info` Shows various information about your avatar and world limits.
   - If mode (VR/desktop) is incorrectly detected, use the `vr` or `desktop` command.
-- `vr` Selects VR mode.
-- `desktop` Selects desktop mode.
+  - Short version: `i`
+- `vr` Selects VR mode (remembers VRMode as 1).
+- `desktop` Selects desktop mode (remembers VRMode as 0).
   - Short version: `nvr`
+- `lock_vrmode` Prevents the current VRMode from being changed automatically.
+  - Use this if you are in VR but it keeps being detected as desktop after avatar/world changes.
+  - Short version: `lm`
 - `osc_debug` Enables/disables OSC message logging.
 - `osc_send <address> [params]` Sends a custom OSC message.
   - params: `<type>[value]`, examples: `i123 f0.5 T F`

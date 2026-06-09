@@ -29,7 +29,9 @@ class Server:
     def map(self, address: str, callback: Callback) -> None:
         self._dispatch.map(address, callback)
 
-def set_vrmode(vrmode: bool) -> None:
+def set_vrmode(vrmode: bool, force: bool = False) -> None:
+    if globals.vrmode_lock and not force:
+        return
     if vrmode:
         if not globals.VRMode:
             print("Switched to VR mode.")

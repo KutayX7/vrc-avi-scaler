@@ -50,7 +50,7 @@ def shutdown() -> None:
 
 def check_float(value: float) -> None:
     if not is_valid_float(value):
-        raise Exception()
+        raise Exception("Not a valid float.")
 
 def process_command(full_command: str) -> None:
     tokens = full_command.split()
@@ -61,7 +61,7 @@ def process_command(full_command: str) -> None:
     command: str = tokens[0]
     desired_height: Height = height
     match command:
-        case "quit" | "exit":
+        case "quit" | "exit" | "q":
             shutdown()
         case "help":
             print(help_text)
@@ -73,13 +73,17 @@ def process_command(full_command: str) -> None:
             desired_height = globals.world_max_eyeheight
         case "normal" | "reset" | "norm" | "base":
             desired_height = get_base_eyeheight()
-        case "vr":
-            globals.VRMode = True
-        case "desktop" | "nonvr" | "novr" | "nvr":
-            globals.VRMode = False
+        case "vrmode" | "vr":
+            server.set_vrmode(True, True)
+        case "desktopmode" | "desktop" | "nonvr" | "novr" | "nvr":
+            server.set_vrmode(False, True)
+        case "lock_vrmode" | "lockvrmode" | "lvrm" | "lvm" | "lm":
+            globals.vrmode_lock = True
+            print(f"VRMode is locked to {globals.VRMode}")
+            print( "You can set it manually using the `desktop` and `vr` commands.")
         case "nocompat" | "pure":
             globals.compat_killswitch = True
-        case "client_fix":
+        case "fix_osc_client":
             detected_ip: str = globals.osc_detected_VRChat_ip
             current_ip: str = client.ip
             if detected_ip and detected_ip != current_ip:
@@ -113,10 +117,16 @@ def process_command(full_command: str) -> None:
             print("Avatar:")
             if globals.current_eyeheight > 0:
                 if globals.VRMode:
-                    print( "  Mode: VR")
+                    if globals.vrmode_lock:
+                        print( "  Mode: VR (manual)")
+                    else:
+                        print( "  Mode: VR")
                     print(f"  TrackingType: {globals.tracking_type} point tracking")
                 else:
-                    print("  Mode: Desktop")
+                    if globals.vrmode_lock:
+                        print("  Mode: Desktop (manual)")
+                    else:
+                        print("  Mode: Desktop")
                 print(f"  Calculated base eye height: {get_base_eyeheight()} m")
                 print(f"  Current eye height: {globals.current_eyeheight} m")
                 print(f"  Current scale factor: {globals.current_scale_factor}")
