@@ -110,7 +110,7 @@ if __name__ == "__main__":
         description = "Updates the program to the latest version.",
     )
     parser.add_argument("-b", "--branch", default=CURRENT)
-    parser.add_argument("-y", "--yes", default=False)
+    parser.add_argument("-y", "--yes", action='store_true')
     args = parser.parse_args()
     branch = args.branch
     yes = args.yes
