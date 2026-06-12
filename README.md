@@ -92,24 +92,27 @@ A simple tool for advanced control of your avatar scale on VRChat.
   * It will create a virtual environment (if it doesn't already exist).
   * Then it will install the dependencies in the virtual environment.
   * On Linux, it also makes the `start.sh` executable.
+  * It will also create a desktop entry (if possible and supported).
+    * Only supported on desktop linux distros, for now.
+    * Append ` --no-desktop ` to skip desktop entry creation.
 
 ## Updates
 
-There are no automatic updates nor check for updates, yet, so you'll have to update manually.
+If you installed this from a package manager (maintained by community), use that to get updates and ignore the rest of this section.
 
-You can either do a clean installation (delete the whole `vrc-avi-scaler` folder and follow the recommended installation steps again) or run the `update.py` script.
+If you went with the recommended installation method, there is no automatic check for updates, yet, so you'll have to update manually. Either right click on the desktop entry and select `Update` or run the update script (`python path/to/update.py`). And then follow the instructions (if any).
 
 Please check this README after each update.
 
 > [!WARNING]
-> If you can't run the program after changes to your environment (system updates, python updates, directory changes), you need to run the `setup.py` script again. If that doesn't work, run the `update.py` script. If that doesn't work either, make a clean installation.
+> If you can't run the program after changes to your environment (system updates, python updates, directory changes), right click on the desktop entry and click `Repair` OR run the `setup.py` script again. If those doesn't work, run the `update.py` script. If that doesn't work either, make a clean installation.
 
 ## Usage
 
 To start the program, run the start script:
   * On Windows, run the `start_windows.bat` script (you can double click it).
-  * On Linux, run the `start.sh` script in your terminal.
-    * Method varies from system to system.
+  * On Linux,  run the `start.sh` script in your terminal.
+    * OR you can use the desktop entry (which shuld be created automatically during setup).
 
 Make sure to enable OSC in VRChat! (Either in settings or in Action Menu > Options > OSC)
 
