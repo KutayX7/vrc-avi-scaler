@@ -100,7 +100,7 @@ A simple tool for advanced control of your avatar scale on VRChat.
 
 If you installed this from a package manager (maintained by community), use that to get updates and ignore the rest of this section.
 
-If you went with the recommended installation method, there is no automatic check for updates, yet, so you'll have to update manually. Either right click on the desktop entry and select `Update` or run the update script (`python path/to/update.py`). And then follow the instructions (if any).
+If you went with the recommended installation method, there is no automatic check for updates, yet, so you'll have to update manually. Either right click on the desktop entry and select `Update` OR run the update script (`python3 path/to/update.py`). And then follow the instructions (if any).
 
 Please check this README after each update.
 
@@ -111,8 +111,9 @@ Please check this README after each update.
 
 To start the program, run the start script:
   * On Windows, run the `start_windows.bat` script (you can double click it).
-  * On Linux,  run the `start.sh` script in your terminal.
-    * OR you can use the desktop entry (which shuld be created automatically during setup).
+    * For convenience, you may want to create a shortcut to it.
+  * On Linux, run the `./start.sh` script in your terminal.
+    * OR you can use the desktop entry (created automatically during setup by default).
 
 Make sure to enable OSC in VRChat! (Either in settings or in Action Menu > Options > OSC)
 
