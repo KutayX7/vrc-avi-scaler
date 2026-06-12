@@ -28,6 +28,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('--dev', action='store_true')
 parser.add_argument('--no-desktop', action='store_true')
+parser.add_argument('--repair', action='store_true')
 args, _ = parser.parse_known_args()
 
 requirements_file: str = 'requirements.txt'
