@@ -7,40 +7,54 @@
 # UNLESS YOU KNOW WHAT YOU'RE DOING!
 # Don't report an issue if you modified this file.
 
+from simple_types import Any, Height, ScaleFactor, ParameterValue, TrackingType
+
 # General
-FPS = 90.0
-save_config_on_exit = False
+FPS: float = 90.0
+save_config_on_exit: bool = False
 
 # OSC
-osc_client_ip = "127.0.0.1"
-osc_client_port = 9000
-osc_server_ip = "127.0.0.1"
-osc_server_port = 9001
-osc_debug_log = False
+osc_client_ip: str = "127.0.0.1"
+osc_client_port: int = 9000
+osc_server_ip: str = "127.0.0.1"
+osc_server_port: int = 9001
+osc_debug_log: bool = False
 
 # Compatibility with third-party scaling systems
-compat_magsscaleadjuster = True # Mag's Scale Adjuster
-compat_jackalscaling = True # Jackal Scaling System
+compat_magsscaleadjuster: bool = True # Mag's Scale Adjuster
+compat_jackalscaling: bool = True # Jackal Scaling System
 
 # VRChat avatar eye-height limits (in meters)
-MIN_HEIGHT =     0.01
-MAX_HEIGHT = 10000.0
+MIN_EYEHEIGHT: Height =     0.01
+MAX_EYEHEIGHT: Height = 10000.0
 
 # Internal (PLEASE DO NOT TOUCH)
-server = None
-client = None
-current_eyeheight = 0.0
-current_scale_factor = 0.0
-world_min_eyeheight = 0.0
-world_max_eyeheight = 0.0
-world_scaling_allowed = True
-scaling = False
-scaling_id = 0
-target_eyeheight = 0
-smooth_scaling_step_frequency = 1
-smooth_scaling_duration = 0
-TrackingType = 0
-VRMode = False
-compat_killswitch = False
-avatar_parameters = {}
-commands = []
+server: Any = None
+client: Any = None
+current_eyeheight: Height = 0.0
+current_scale_factor: ScaleFactor = 0.0
+world_min_eyeheight: Height = 0.0
+world_max_eyeheight: Height = 0.0
+world_scaling_allowed: bool = True
+scaling: bool = False
+scaling_id: int = 0
+target_eyeheight: Height = 0
+smooth_scaling_step_frequency: float = 1.0
+smooth_scaling_duration: float = 0.0
+smooth_scaling_default_duration: float = 3.0
+tracking_type: TrackingType = 0
+VRMode: bool = False
+compat_killswitch: bool = False
+avatar_parameters: dict[str, ParameterValue] = {}
+oscquery_enabled: bool = True
+oscquery_service_ip: str = "127.0.0.1"
+oscquery_service_port: int = 9070
+oscquery_vrchat_service_name: str = ""
+oscquery_vrchat_address: str = ""
+oscquery_vrchat_port: int = 9000
+oscquery_listener: Any = None
+oscquery_service: Any = None
+oscquery_http_server: Any = None
+osc_detected_VRChat_ip: str = ""
+auto_apply_client_fix: bool = False
+vrmode_lock: bool = False

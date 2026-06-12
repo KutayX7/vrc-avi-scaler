@@ -2,10 +2,12 @@ import sys
 import globals
 import client
 import server
-import scaling_utils
+import oscquery
 from config import *
+from simple_types import ParameterValue, Height
+from scaling_utils import get_base_eyeheight, parse_to_meters, is_valid_float
 
-help_text = """
+help_text: str = """
 Available commands:
     quit   : Quits the app.
     exit
@@ -39,23 +41,27 @@ Available commands:
 
 To change your size, just type your desired eye height (optionally with the unit)."""
 
-def shutdown():
+def shutdown() -> None:
     print("Shutting down the program...")
     if globals.save_config_on_exit:
         save_config()
     print("Feel free to close the window/terminal.")
     sys.exit(0)
 
-def process_command(full_command):
+def check_float(value: float) -> None:
+    if not is_valid_float(value):
+        raise Exception("Not a valid float.")
+
+def process_command(full_command: str) -> None:
     tokens = full_command.split()
     if len(tokens) < 1:
         return
     client = globals.client
-    height = globals.current_eyeheight
-    command = tokens[0]
-    desired_height = height
+    height: Height = globals.current_eyeheight
+    command: str = tokens[0]
+    desired_height: Height = height
     match command:
-        case "quit" | "exit":
+        case "quit" | "exit" | "q":
             shutdown()
         case "help":
             print(help_text)
@@ -65,14 +71,23 @@ def process_command(full_command):
             desired_height = globals.world_min_eyeheight
         case "max":
             desired_height = globals.world_max_eyeheight
-        case "normal" | "norm" | "base":
-            desired_height = scaling_utils.get_base_eyeheight()
-        case "vr":
-            globals.VRMode = True
-        case "desktop" | "nonvr" | "novr" | "nvr":
-            globals.VRMode = False
+        case "normal" | "reset" | "norm" | "base":
+            desired_height = get_base_eyeheight()
+        case "vrmode" | "vr":
+            server.set_vrmode(True, True)
+        case "desktopmode" | "desktop" | "nonvr" | "novr" | "nvr":
+            server.set_vrmode(False, True)
+        case "lock_vrmode" | "lockvrmode" | "lvrm" | "lvm" | "lm":
+            globals.vrmode_lock = True
+            print(f"VRMode is locked to {globals.VRMode}")
+            print( "You can set it manually using the `desktop` and `vr` commands.")
         case "nocompat" | "pure":
             globals.compat_killswitch = True
+        case "fix_osc_client":
+            detected_ip: str = globals.osc_detected_VRChat_ip
+            current_ip: str = client.ip
+            if detected_ip and detected_ip != current_ip:
+                client.reconnect(detected_ip, client.port)
         case "osc_debug":
             globals.osc_debug_log = not globals.osc_debug_log
             if globals.osc_debug_log:
@@ -80,8 +95,8 @@ def process_command(full_command):
             else:
                 print("Disabled OSC debugging.")
         case "osc_send":
-            address = tokens[1]
-            list_to_send = []
+            address: str = tokens[1]
+            list_to_send: list[ParameterValue] = []
             for token in tokens[2:]:
                 token_type = token[0:1]
                 match token_type:
@@ -101,8 +116,18 @@ def process_command(full_command):
         case "info" | "i":
             print("Avatar:")
             if globals.current_eyeheight > 0:
-                print(f"  VRMode: {globals.VRMode}")
-                print(f"  Calculated base eye height: {scaling_utils.get_base_eyeheight()} m")
+                if globals.VRMode:
+                    if globals.vrmode_lock:
+                        print( "  Mode: VR (manual)")
+                    else:
+                        print( "  Mode: VR")
+                    print(f"  TrackingType: {globals.tracking_type} point tracking")
+                else:
+                    if globals.vrmode_lock:
+                        print("  Mode: Desktop (manual)")
+                    else:
+                        print("  Mode: Desktop")
+                print(f"  Calculated base eye height: {get_base_eyeheight()} m")
                 print(f"  Current eye height: {globals.current_eyeheight} m")
                 print(f"  Current scale factor: {globals.current_scale_factor}")
             else:
@@ -128,18 +153,20 @@ def process_command(full_command):
             else:
                 print("Avatar scaling is currently disabled by the world.")
         case "override" | "o":
-            globals.world_min_eyeheight = globals.MIN_HEIGHT
-            globals.world_max_eyeheight = globals.MAX_HEIGHT
+            globals.world_min_eyeheight = globals.MIN_EYEHEIGHT
+            globals.world_max_eyeheight = globals.MAX_EYEHEIGHT
             globals.world_scaling_allowed = True
             print("Forgot the world limits ;)")
             print("You may encounter weird behavior.")
         case "instant":
             globals.smooth_scaling_duration = 0
         case "smooth" | "s":
+            length: float = globals.smooth_scaling_default_duration
             try:
                 length = abs(float(tokens[1]))
+                check_float(length)
             except:
-                length = 3.0
+                print(f"Duration is unspecified/invalid.")
             finally:
                 if globals.smooth_scaling_duration <= 0:
                     print(f"Enabled smooth scaling.")
@@ -150,6 +177,7 @@ def process_command(full_command):
         case "framerate" | "fps":
             try:
                 fps = abs(float(tokens[1]))
+                check_float(fps)
                 globals.FPS = fps
                 globals.smooth_scaling_step_frequency = fps * 4
                 print(f"Epected FPS set to {fps}")
@@ -163,6 +191,7 @@ def process_command(full_command):
                     globals.smooth_scaling_step_frequency = globals.FPS * 4
                 else:
                     frequency = abs(float(tokens[1]))
+                    check_float(frequency)
                     globals.smooth_scaling_step_frequency = frequency
             except:
                 print("Invalid value.")
@@ -181,22 +210,22 @@ def process_command(full_command):
             print("You can save the current configuration manually by using the `save` command.")
         case _:
             try:
-                desired_height = scaling_utils.parse_to_meters(full_command, height)
+                desired_height = parse_to_meters(full_command, height)
             except:
                 print("Unknown command. You can type \"help\" for a list of commands.")
     if desired_height != globals.current_eyeheight:
         if globals.world_scaling_allowed:
-            if desired_height < globals.MIN_HEIGHT:
-                print(f"Too small! Minimum {globals.MIN_HEIGHT} m.")
-            elif desired_height > globals.MAX_HEIGHT:
-                print(f"Too big! Maximum {globals.MAX_HEIGHT} m.")
+            if desired_height < globals.MIN_EYEHEIGHT:
+                print(f"Too small! Minimum {globals.MIN_EYEHEIGHT} m.")
+            elif desired_height > globals.MAX_EYEHEIGHT:
+                print(f"Too big! Maximum {globals.MAX_EYEHEIGHT} m.")
             else:
                 print(f"Setting eye height to {desired_height} m...")
                 client.set_eyeheight(desired_height, globals.smooth_scaling_duration)
         else:
             print("Avatar scaling is not available right now.")
 
-def main():
+def main() -> None:
     print("\033[0;33m[ KutayX7's VRChat Avi Scaler ]\033[0m")
     print("For issues and feedback, visit https://github.com/KutayX7/vrc-avi-scaler/issues")
 
@@ -232,12 +261,20 @@ def main():
                     print("Invalid choice.")
                     sys.exit(-1)
 
+    print("--------------------")
     print("Type \"help\" to see a list of commands.")
     print("Type \"quit\" to quit.")
     print("--------------------")
-    globals.server = server.start_server(globals.osc_server_ip, globals.osc_server_port)
+    osc_server_ip = globals.osc_server_ip
+    osc_server_port = globals.osc_server_port
+    if globals.oscquery_enabled:
+        oscquery.start_service()
+        oscquery.start_listener()
+        osc_server_ip = ''
+        osc_server_port = globals.oscquery_service_port
+    globals.server = server.start_server(osc_server_ip, osc_server_port)
     globals.client = client.start_client(globals.osc_client_ip, globals.osc_client_port)
-    print("")
+
     while True:
         process_command(input(""))
 
