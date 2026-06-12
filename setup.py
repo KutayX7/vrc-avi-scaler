@@ -26,8 +26,9 @@ parser = argparse.ArgumentParser(
     prog = "vrc-avi-scaler-self-upgrade",
     description = "Upgrades the program to the latest version from the main branch."
 )
-parser.add_argument('-d', '--dev', action='store_true')
-args = parser.parse_args()
+parser.add_argument('--dev', action='store_true')
+parser.add_argument('--no-desktop', action='store_true')
+args, _ = parser.parse_known_args()
 
 requirements_file: str = 'requirements.txt'
 if args.dev:
@@ -102,10 +103,52 @@ def create_venv() -> int:
                 print("[ERROR] Failed to create a virtual environment.")
             return returncode
 
+def create_desktop_file() -> int:
+    match sys.platform:
+        case 'linux':
+            path = Path.home() / ".local/share/applications/vrc-avi-scaler.desktop"
+            content = "\n".join([
+                f"[Desktop Entry]",
+                f"Type = Application",
+                f"Version = 1.0",
+                f"Name = VRChat Avi Scaler",
+                f"Comment = VRChat OSC avatar scaling tool",
+                f"Keywords = scaling;scaler;size;avi;avatar;vrc;vrchat;osc;",
+                f"Path = {Path().resolve()}",
+                f"Exec = {Path().resolve() / 'start.sh'}",
+                f"Terminal = true",
+                f"Categories = Utility;",
+                f"Actions = Start;Update;Repair;",
+                f"",
+                f"[Desktop Action Start]",
+                f"Name = Start",
+                f"Exec = {Path().resolve() / 'start.sh'}",
+                f"",
+                f"[Desktop Action Update]",
+                f"Name = Update",
+                f"Exec = {sys.executable} {Path().resolve() / 'update.py'}",
+                f"",
+                f"[Desktop Action Repair]",
+                f"Name = Repair",
+                f"Exec = /usr/bin/python3 {Path().resolve() / 'setup.py'} --repair",
+            ])
+            try:
+                path.write_text(content, encoding='utf-8')
+                print(f"[INFO] Created desktop entry at {path}")
+                return 0
+            except Exception as e:
+                print(f"[INFO] Failed to create desktop entry. {e}")
+                return -1
+        case _:
+            print("[INFO] Desktop entry creation is not supported on this platform. (At least not yet.)")
+            return -1
+
 if (check_venv() == 0 and
     create_venv() == 0 and
     install_dependencies() == 0 and
     make_start_script_executable() == 0):
+    if not args.no_desktop:
+        create_desktop_file()
     print("Installation complete.")
 else:
     print("Installation failed.")
