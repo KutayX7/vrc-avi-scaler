@@ -73,6 +73,9 @@ A simple tool for advanced control of your avatar scale on VRChat.
 
   - You can check if Git is installed and check its version by running `git --version`
 
+> [!WARNING]
+> Releaes (which can be found in `Tags`) are mainly for package managers. Please follow the recommended installation method below for the best experience in all platforms.
+
 ### Recommended installation method
 
 1. Open your terminal:
@@ -160,10 +163,15 @@ A: It's probably related to these VRChat bugs:
   * https://feedback.vrchat.com/bug-reports/p/jittering-view-effect-when-lerping-osc-avatar-scaling
   * (I tried my best to mitigate them but the experience may not be perfect.)
 
-**Q: Why not release packages/executables?**
+**Q: Why not release packages/executables directly?**
 
-A: This way felt more convenient to me and it makes it easy to update. You can use the `update.py` script to update the app easily once installed, and it should work on forks too without any modifications needed.
-If you can, feel free to package it yourself but please put a link to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
+A: This way felt more convenient to me and it makes it easy to update (both for me and for the users).
+Also, building cross-platform executables is time consuming and not simple enough.
+
+**Q: Can I package and distribute it myself?**
+
+A: Feel free to do it but please put a link that directs to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
+And be aware that there may be breaking changes to the repository or setup/update scripts. I would appreciate if you notify users about trying the recommended installation method first.
 
 **Q: Any plans for a GUI?**
 
