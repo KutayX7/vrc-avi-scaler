@@ -95,6 +95,8 @@ def _is_local(address: str) -> bool:
             return True
         case "127.0.1.1":
             return True
+        case "10.10.10.10":
+            return True
         case "::1":
             return True
     return False
