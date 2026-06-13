@@ -8,7 +8,9 @@ from pathlib import Path
 if __name__ != "__main__":
     raise Exception("This can not be used as a module.")
 
-venv_path = Path('.') / '.venv'
+path = Path().resolve()
+home = Path.home()
+venv_path = path / '.venv'
 start_script_name: str = 'start.sh'
 
 print(f"[INFO] Detected OS: {os.name}/{sys.platform}")
@@ -107,35 +109,36 @@ def create_venv() -> int:
 def create_desktop_file() -> int:
     match sys.platform:
         case 'linux':
-            path = Path.home() / ".local/share/applications/vrc-avi-scaler.desktop"
+            desktop_entry = home / ".local/share/applications/vrc-avi-scaler.desktop"
             content = "\n".join([
                 f"[Desktop Entry]",
                 f"Type = Application",
                 f"Version = 1.0",
                 f"Name = VRChat Avi Scaler",
-                f"Comment = VRChat OSC avatar scaling tool",
+                f"Icon = {path / 'icon_128x128.png'}",
+                f"Comment = KutayX7's VRChat OSC avatar scaling tool",
                 f"Keywords = scaling;scaler;size;avi;avatar;vrc;vrchat;osc;",
-                f"Path = {Path().resolve()}",
-                f"Exec = {Path().resolve() / 'start.sh'}",
+                f"Path = {path}",
+                f"Exec = {path / 'start.sh'}",
                 f"Terminal = true",
                 f"Categories = Utility;",
                 f"Actions = Start;Update;Repair;",
                 f"",
                 f"[Desktop Action Start]",
                 f"Name = Start",
-                f"Exec = {Path().resolve() / 'start.sh'}",
+                f"Exec = {path / 'start.sh'}",
                 f"",
                 f"[Desktop Action Update]",
                 f"Name = Update",
-                f"Exec = {sys.executable} {Path().resolve() / 'update.py'}",
+                f"Exec = {sys.executable} {path / 'update.py'}",
                 f"",
                 f"[Desktop Action Repair]",
                 f"Name = Repair",
-                f"Exec = /usr/bin/python3 {Path().resolve() / 'setup.py'} --repair",
+                f"Exec = /usr/bin/python3 {path / 'setup.py'} --repair",
             ])
             try:
-                path.write_text(content, encoding='utf-8')
-                print(f"[INFO] Created desktop entry at {path}")
+                desktop_entry.write_text(content, encoding='utf-8')
+                print(f"[INFO] Created desktop entry at {desktop_entry}")
                 return 0
             except Exception as e:
                 print(f"[INFO] Failed to create desktop entry. {e}")
