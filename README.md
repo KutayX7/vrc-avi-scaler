@@ -74,7 +74,7 @@ A simple tool for advanced control of your avatar scale on VRChat.
   - You can check if Git is installed and check its version by running `git --version`
 
 > [!WARNING]
-> Releaes (which can be found in `Tags`) are mainly for package managers. Please follow the recommended installation method below for the best experience in all platforms.
+> Releaes (which can be found in `Tags`) are mainly for package managers. Please follow the recommended installation method below for the best experience on all supported platforms.
 
 ### Recommended installation method
 
@@ -150,7 +150,7 @@ You can ask questions in [Q&A](https://github.com/KutayX7/vrc-avi-scaler/discuss
 
 **Q: Is this safe?**
 
-A: You can check the source code. The most dangerous parts are the dependencies and the experimental self-update. Also, if you're worried about getting moderated for using this, VRChat is unlikely to take any moderation action against you as long as you don't abuse it. This program does not use any illegal method.
+A: You can check the source code. The most dangerous parts are the dependencies and the update system. Also, if you're worried about getting moderated for using this, VRChat is unlikely to take any moderation action against you as long as you don't abuse it. This program does not use any illegal method.
 
 **Q: Does it work on Android or Quest 2/3?**
 
@@ -171,7 +171,7 @@ Also, building cross-platform executables is time consuming and not simple enoug
 **Q: Can I package and distribute it myself?**
 
 A: Feel free to do it but please put a link that directs to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
-And be aware that there may be breaking changes to the repository or setup/update scripts. I would appreciate if you notify users about trying the recommended installation method first.
+And be aware that there may be breaking changes to the repository or setup/update scripts (I will try my best not to break things on the main branch). I would appreciate if you notify users about trying the recommended installation method first.
 
 **Q: Any plans for a GUI?**
 
