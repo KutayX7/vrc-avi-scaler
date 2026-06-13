@@ -73,6 +73,9 @@ A simple tool for advanced control of your avatar scale on VRChat.
 
   - You can check if Git is installed and check its version by running `git --version`
 
+> [!WARNING]
+> Releaes (which can be found in `Tags`) are mainly for package managers. Please follow the recommended installation method below for the best experience on all supported platforms.
+
 ### Recommended installation method
 
 1. Open your terminal:
@@ -92,24 +95,28 @@ A simple tool for advanced control of your avatar scale on VRChat.
   * It will create a virtual environment (if it doesn't already exist).
   * Then it will install the dependencies in the virtual environment.
   * On Linux, it also makes the `start.sh` executable.
+  * It will also create a desktop entry (if possible and supported).
+    * Only supported on desktop linux distros, for now.
+    * Append ` --no-desktop ` to skip desktop entry creation.
 
 ## Updates
 
-There are no automatic updates nor check for updates, yet, so you'll have to update manually.
+If you installed this from a package manager (maintained by community), use that to get updates and ignore the rest of this section.
 
-You can either do a clean installation (delete the whole `vrc-avi-scaler` folder and follow the recommended installation steps again) or run the `update.py` script.
+If you went with the recommended installation method, there is no automatic check for updates, yet, so you'll have to update manually. Either right click on the desktop entry and select `Update` OR run the update script (`python3 path/to/update.py`). And then follow the instructions (if any).
 
 Please check this README after each update.
 
 > [!WARNING]
-> If you can't run the program after changes to your environment (system updates, python updates, directory changes), you need to run the `setup.py` script again. If that doesn't work, run the `update.py` script. If that doesn't work either, make a clean installation.
+> If you can't run the program after changes to your environment (system updates, python updates, directory changes), right click on the desktop entry and click `Repair` OR run the `setup.py` script again. If those doesn't work, run the `update.py` script. If that doesn't work either, make a clean installation.
 
 ## Usage
 
 To start the program, run the start script:
   * On Windows, run the `start_windows.bat` script (you can double click it).
-  * On Linux, run the `start.sh` script in your terminal.
-    * Method varies from system to system.
+    * For convenience, you may want to create a shortcut to it.
+  * On Linux, run the `./start.sh` script in your terminal.
+    * OR you can use the desktop entry (created automatically during setup by default).
 
 Make sure to enable OSC in VRChat! (Either in settings or in Action Menu > Options > OSC)
 
@@ -143,7 +150,7 @@ You can ask questions in [Q&A](https://github.com/KutayX7/vrc-avi-scaler/discuss
 
 **Q: Is this safe?**
 
-A: You can check the source code. The most dangerous parts are the dependencies and the experimental self-update. Also, if you're worried about getting moderated for using this, VRChat is unlikely to take any moderation action against you as long as you don't abuse it. This program does not use any illegal method.
+A: You can check the source code. The most dangerous parts are the dependencies and the update system. Also, if you're worried about getting moderated for using this, VRChat is unlikely to take any moderation action against you as long as you don't abuse it. This program does not use any illegal method.
 
 **Q: Does it work on Android or Quest 2/3?**
 
@@ -156,10 +163,15 @@ A: It's probably related to these VRChat bugs:
   * https://feedback.vrchat.com/bug-reports/p/jittering-view-effect-when-lerping-osc-avatar-scaling
   * (I tried my best to mitigate them but the experience may not be perfect.)
 
-**Q: Why not release packages/executables?**
+**Q: Why not release packages/executables directly?**
 
-A: This way felt more convenient to me and it makes it easy to update. You can use the `update.py` script to update the app easily once installed, and it should work on forks too without any modifications needed.
-If you can, feel free to package it yourself but please put a link to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
+A: This way felt more convenient to me and it makes it easy to update (both for me and for the users).
+Also, building cross-platform executables is time consuming and not simple enough.
+
+**Q: Can I package and distribute it myself?**
+
+A: Feel free to do it but please put a link that directs to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
+And be aware that there may be breaking changes to the repository or setup/update scripts (I will try my best not to break things on the main branch). I would appreciate if you notify users about trying the recommended installation method first.
 
 **Q: Any plans for a GUI?**
 
