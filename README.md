@@ -1,12 +1,13 @@
 # KutayX7's VRChat Avi Scaler
 
-A simple tool for advanced control of your avatar scale on VRChat.
+A tool for control over the scale of your avatar on VRChat.
 
 ## Features
 
 - Uses OSC to communicate with VRChat.
 - Scale your avatar to any size allowed by the world and VRChat.
-  * Unless restricted by the world, 1cm - 10km.
+  * Unless restricted by the world, 1cm-10km.
+  * It is not recommended to go beyond the 20cm-100m range due to VRChat engine glitches.
 - Option to scale instantly, or smoothly over a period of time.
 - Compatibility with third-party scaling systems:
   * Full compatibility with [Jackal Scaling System](https://spacejackal.gumroad.com/l/JackalScaler).
@@ -103,7 +104,7 @@ A simple tool for advanced control of your avatar scale on VRChat.
 
 If you installed this from a package manager (maintained by community), use that to get updates and ignore the rest of this section.
 
-If you went with the recommended installation method, there is no automatic check for updates, yet, so you'll have to update manually. Either right click on the desktop entry and select `Update` OR run the update script (`python3 path/to/update.py`). And then follow the instructions (if any).
+If you went with the recommended installation method, there is no automatic check for updates, yet, so you'll have to update manually. Either right click on the desktop entry and select `Update` OR run the update script (`cd vrc-avi-scaler` then `python update.py`). And then follow the instructions (if any).
 
 Please check this README after each update.
 
@@ -114,9 +115,10 @@ Please check this README after each update.
 
 To start the program, run the start script:
   * On Windows, run the `start_windows.bat` script (you can double click it).
-    * For convenience, you may want to create a shortcut to it.
+    * For convenience, you may want to create a shortcut to it on your desktop.
+    * Right click > Send to > Desktop (create shortcut)
   * On Linux, run the `./start.sh` script in your terminal.
-    * OR you can use the desktop entry (created automatically during setup by default).
+    * OR you can use the desktop entry (if created during setup).
 
 Make sure to enable OSC in VRChat! (Either in settings or in Action Menu > Options > OSC)
 
@@ -141,12 +143,12 @@ For example, if you set your in-game FPS limit to 120 FPS, use the command `fps 
 PLEASE GIVE FEEDBACK! That's the biggest support you could give for now. <3
 
 All constructive feedback is welcome. Bug-reports, feature-requests, etc.
-Please make sure you're using the latest version before opening a new issue (if applicable).
+Please make sure you're using the latest version from the main branch before opening a new issue (if applicable).
 And please avoid making duplicate issues.
 
 You can ask questions in [Q&A](https://github.com/KutayX7/vrc-avi-scaler/discussions/categories/q-a).
 
-## Q&A
+## [Q&A](https://github.com/KutayX7/vrc-avi-scaler/discussions/categories/q-a)
 
 **Q: Is this safe?**
 
@@ -154,7 +156,7 @@ A: You can check the source code. The most dangerous parts are the dependencies 
 
 **Q: Does it work on Android or Quest 2/3?**
 
-A: Yes. But. If you're playing on Android/Quest, it is recommended to run the app on a separate device. They should be able to connect automatically as long as they are on the same Wi-Fi network. Running it on the same Android device may result in reduced functionality unless configured properly.
+A: Yes. But. If you're playing on Android/Quest, it is recommended to run the app on a separate device (preferably a Windows or Linux PC). They should be able to connect automatically as long as they are on the same Wi-Fi network. Running it on the same Android device may result in reduced functionality unless configured properly.
 
 **Q: Why does smooth scaling make my avatar weird?**
 
@@ -184,6 +186,8 @@ A: This program is designed with compatibility in mind so open an issue about it
 **Q: Can I use other OSC apps along with this?**
 
 A: Yes. But if it's another OSC scaling app, you may want to use the `nocompat` command to prevent any race conditions during usage.
+
+**More questions?** Check [Discussions](https://github.com/KutayX7/vrc-avi-scaler/discussions).
 
 ## All commands
 
@@ -232,6 +236,22 @@ A: Yes. But if it's another OSC scaling app, you may want to use the `nocompat` 
   - Short version: `o`
 - `instant` Disables smooth scaling.
   - Same as: `s 0`
+
+## Contribution
+
+- Please open an issue first so people can avoid working on the same issue.
+- Please avoid creating pull requests unless you think it's urgent or simple.
+- Avoid making breaking commits on non-draft pull requests.
+- For AI generated/assisted code:
+  - You (human) must read and understand the entirety of the code.
+  - You must test it yourself first and make sure that *everything works*.
+- Follow Python code conventions (https://peps.python.org/pep-0008/).
+  - Exceptions can be made in some cases.
+- Avoid adding dependencies.
+- No malicious code/procedures/content.
+- UX of average user is important.
+- Feel free to make use of puns in commits/PRs.
+- The code you provide will be licensed under the same [license in this repository](LICENSE).
 
 ## Disclaimer
 > This project is neither affiliated with nor endorsed by VRChat nor by other avatar scaling system creators.
