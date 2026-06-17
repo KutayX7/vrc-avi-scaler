@@ -111,7 +111,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-b", "--branch", default=CURRENT)
     parser.add_argument("-y", "--yes", action='store_true')
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
     branch = args.branch
     yes = args.yes
 

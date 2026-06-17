@@ -1,12 +1,13 @@
 # KutayX7's VRChat Avi Scaler
 
-A simple tool for advanced control of your avatar scale on VRChat.
+A tool for control over the scale of your avatar on VRChat.
 
 ## Features
 
 - Uses OSC to communicate with VRChat.
 - Scale your avatar to any size allowed by the world and VRChat.
-  * Unless restricted by the world, 1cm - 10km.
+  * Unless restricted by the world, 1cm-10km.
+  * It is not recommended to go beyond the 20cm-100m range due to VRChat engine glitches.
 - Option to scale instantly, or smoothly over a period of time.
 - Compatibility with third-party scaling systems:
   * Full compatibility with [Jackal Scaling System](https://spacejackal.gumroad.com/l/JackalScaler).
@@ -73,6 +74,9 @@ A simple tool for advanced control of your avatar scale on VRChat.
 
   - You can check if Git is installed and check its version by running `git --version`
 
+> [!WARNING]
+> Releaes (which can be found in `Tags`) are mainly for package managers. Please follow the recommended installation method below for the best experience on all supported platforms.
+
 ### Recommended installation method
 
 1. Open your terminal:
@@ -92,24 +96,29 @@ A simple tool for advanced control of your avatar scale on VRChat.
   * It will create a virtual environment (if it doesn't already exist).
   * Then it will install the dependencies in the virtual environment.
   * On Linux, it also makes the `start.sh` executable.
+  * It will also create a desktop entry (if possible and supported).
+    * Only supported on desktop linux distros, for now.
+    * Append ` --no-desktop ` to skip desktop entry creation.
 
 ## Updates
 
-There are no automatic updates nor check for updates, yet, so you'll have to update manually.
+If you installed this from a package manager (maintained by community), use that to get updates and ignore the rest of this section.
 
-You can either do a clean installation (delete the whole `vrc-avi-scaler` folder and follow the recommended installation steps again) or run the `update.py` script.
+If you went with the recommended installation method, there is no automatic check for updates, yet, so you'll have to update manually. Either right click on the desktop entry and select `Update` OR run the update script (`cd vrc-avi-scaler` then `python update.py`). And then follow the instructions (if any).
 
 Please check this README after each update.
 
 > [!WARNING]
-> If you can't run the program after changes to your environment (system updates, python updates, directory changes), you need to run the `setup.py` script again. If that doesn't work, run the `update.py` script. If that doesn't work either, make a clean installation.
+> If you can't run the program after changes to your environment (system updates, python updates, directory changes), right click on the desktop entry and click `Repair` OR run the `setup.py` script again. If those doesn't work, run the `update.py` script. If that doesn't work either, make a clean installation.
 
 ## Usage
 
 To start the program, run the start script:
   * On Windows, run the `start_windows.bat` script (you can double click it).
-  * On Linux, run the `start.sh` script in your terminal.
-    * Method varies from system to system.
+    * For convenience, you may want to create a shortcut to it on your desktop.
+    * Right click > Send to > Desktop (create shortcut)
+  * On Linux, run the `./start.sh` script in your terminal.
+    * OR you can use the desktop entry (if created during setup).
 
 Make sure to enable OSC in VRChat! (Either in settings or in Action Menu > Options > OSC)
 
@@ -134,20 +143,20 @@ For example, if you set your in-game FPS limit to 120 FPS, use the command `fps 
 PLEASE GIVE FEEDBACK! That's the biggest support you could give for now. <3
 
 All constructive feedback is welcome. Bug-reports, feature-requests, etc.
-Please make sure you're using the latest version before opening a new issue (if applicable).
+Please make sure you're using the latest version from the main branch before opening a new issue (if applicable).
 And please avoid making duplicate issues.
 
 You can ask questions in [Q&A](https://github.com/KutayX7/vrc-avi-scaler/discussions/categories/q-a).
 
-## Q&A
+## [Q&A](https://github.com/KutayX7/vrc-avi-scaler/discussions/categories/q-a)
 
 **Q: Is this safe?**
 
-A: You can check the source code. The most dangerous parts are the dependencies and the experimental self-update. Also, if you're worried about getting moderated for using this, VRChat is unlikely to take any moderation action against you as long as you don't abuse it. This program does not use any illegal method.
+A: You can check the source code. The most dangerous parts are the dependencies and the update system. Also, if you're worried about getting moderated for using this, VRChat is unlikely to take any moderation action against you as long as you don't abuse it. This program does not use any illegal method.
 
 **Q: Does it work on Android or Quest 2/3?**
 
-A: Yes. But. If you're playing on Android/Quest, it is recommended to run the app on a separate device. They should be able to connect automatically as long as they are on the same Wi-Fi network. Running it on the same Android device may result in reduced functionality unless configured properly.
+A: Yes. But. If you're playing on Android/Quest, it is recommended to run the app on a separate device (preferably a Windows or Linux PC). They should be able to connect automatically as long as they are on the same Wi-Fi network. Running it on the same Android device may result in reduced functionality unless configured properly.
 
 **Q: Why does smooth scaling make my avatar weird?**
 
@@ -156,10 +165,15 @@ A: It's probably related to these VRChat bugs:
   * https://feedback.vrchat.com/bug-reports/p/jittering-view-effect-when-lerping-osc-avatar-scaling
   * (I tried my best to mitigate them but the experience may not be perfect.)
 
-**Q: Why not release packages/executables?**
+**Q: Why not release packages/executables directly?**
 
-A: This way felt more convenient to me and it makes it easy to update. You can use the `update.py` script to update the app easily once installed, and it should work on forks too without any modifications needed.
-If you can, feel free to package it yourself but please put a link to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
+A: This way felt more convenient to me and it makes it easy to update (both for me and for the users).
+Also, building cross-platform executables is time consuming and not simple enough.
+
+**Q: Can I package and distribute it myself?**
+
+A: Feel free to do it but please put a link that directs to [the original repository](https://github.com/KutayX7/vrc-avi-scaler).
+And be aware that there may be breaking changes to the repository or setup/update scripts (I will try my best not to break things on the main branch). I would appreciate if you notify users about trying the recommended installation method first.
 
 **Q: Any plans for a GUI?**
 
@@ -172,6 +186,8 @@ A: This program is designed with compatibility in mind so open an issue about it
 **Q: Can I use other OSC apps along with this?**
 
 A: Yes. But if it's another OSC scaling app, you may want to use the `nocompat` command to prevent any race conditions during usage.
+
+**More questions?** Check [Discussions](https://github.com/KutayX7/vrc-avi-scaler/discussions).
 
 ## All commands
 
@@ -220,6 +236,22 @@ A: Yes. But if it's another OSC scaling app, you may want to use the `nocompat` 
   - Short version: `o`
 - `instant` Disables smooth scaling.
   - Same as: `s 0`
+
+## Contribution
+
+- Please open an issue first so people can avoid working on the same issue.
+- Please avoid creating pull requests unless you think it's urgent or simple.
+- Avoid making breaking commits on non-draft pull requests.
+- For AI generated/assisted code:
+  - You (human) must read and understand the entirety of the code.
+  - You must test it yourself first and make sure that *everything works*.
+- Follow Python code conventions (https://peps.python.org/pep-0008/).
+  - Exceptions can be made in some cases.
+- Avoid adding dependencies.
+- No malicious code/procedures/content.
+- UX of average user is important.
+- Feel free to make use of puns in commits/PRs.
+- The code you provide will be licensed under the same [license in this repository](LICENSE).
 
 ## Disclaimer
 > This project is neither affiliated with nor endorsed by VRChat nor by other avatar scaling system creators.
