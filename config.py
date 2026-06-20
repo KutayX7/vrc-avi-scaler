@@ -35,8 +35,9 @@ def reset_config_file() -> None:
         f"",
         f"# Compatibility with third-party scaling systems",
         f"[compat]",
-        f"\"Mag's Scale Adjuster\" = {str(globals.compat_magsscaleadjuster).lower()}",
-        f"\"Jackal Scaling\" = {str(globals.compat_jackalscaling).lower()}",
+        f"\"Mag's Scale Adjuster\" = {str(globals.compat_mags).lower()}",
+        f"\"Jackal Scaling System\" = {str(globals.compat_jackal).lower()}",
+        f"\"OpenVRCScaler\" = {str(globals.compat_openvrcs).lower()}",
         f""
     ])
 
@@ -78,7 +79,8 @@ def read_config() -> ConfigReadResult:
         globals.oscquery_enabled = oscquery.get("enabled", globals.oscquery_enabled)
 
         compat = data.get("compat", dict())
-        globals.compat_magsscaleadjuster = compat.get("Mag's Scale Adjuster", globals.compat_magsscaleadjuster)
-        globals.compat_jackalscaling = compat.get("Jackal Scaling", globals.compat_jackalscaling)
+        globals.compat_mags = compat.get("Mag's Scale Adjuster", globals.compat_mags)
+        globals.compat_jackal = compat.get("Jackal Scaling System", globals.compat_jackal)
+        globals.compat_openvrcs = compat.get("OpenVRCScaler", globals.compat_openvrcs)
 
         return ConfigReadResult.SUCCESS

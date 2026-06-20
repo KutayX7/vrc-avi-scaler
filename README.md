@@ -11,8 +11,8 @@ A tool for control over the scale of your avatar on VRChat.
 - Option to scale instantly, or smoothly over a period of time.
 - Compatibility with third-party scaling systems:
   * Full compatibility with [Jackal Scaling System](https://spacejackal.gumroad.com/l/JackalScaler).
+  * Full compatibility with [OpenVRCScaler](https://github.com/SkyeCA/OpenVRCScaler).
   * Partial-compatibility with [Mag's Scale Adjuster](https://magww.gumroad.com/l/scale).
-  * [OpenVRCScaler](https://github.com/SkyeCA/OpenVRCScaler) (coming soon)
   * [SizeOSC](https://anmeire.gumroad.com/l/sizeosc) (considering)
   * (More to be added as time goes on.)
 - Should work on Windows, Linux, macOS, Android/Quest (via Termux), and possibly on some other posix platforms.
