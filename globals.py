@@ -21,8 +21,9 @@ osc_server_port: int = 9001
 osc_debug_log: bool = False
 
 # Compatibility with third-party scaling systems
-compat_magsscaleadjuster: bool = True # Mag's Scale Adjuster
-compat_jackalscaling: bool = True # Jackal Scaling System
+compat_mags: bool = True # Mag's Scale Adjuster
+compat_jackal: bool = True # Jackal Scaling System
+compat_openvrcs: bool = True # OpenVRCScaler
 
 # VRChat avatar eye-height limits (in meters)
 MIN_EYEHEIGHT: Height =     0.01

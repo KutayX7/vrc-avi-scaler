@@ -7,19 +7,19 @@ A tool for control over the scale of your avatar on VRChat.
 - Uses OSC to communicate with VRChat.
 - Scale your avatar to any size allowed by the world and VRChat.
   * Unless restricted by the world, 1cm-10km.
-  * It is not recommended to go beyond the 20cm-100m range due to VRChat engine glitches.
+  * (But it is not recommended to go beyond the 20cm-100m range due to IK and viewport glitches.)
 - Option to scale instantly, or smoothly over a period of time.
 - Compatibility with third-party scaling systems:
   * Full compatibility with [Jackal Scaling System](https://spacejackal.gumroad.com/l/JackalScaler).
+  * Full compatibility with [OpenVRCScaler](https://github.com/SkyeCA/OpenVRCScaler).
   * Partial-compatibility with [Mag's Scale Adjuster](https://magww.gumroad.com/l/scale).
-  * [OpenVRCScaler](https://github.com/SkyeCA/OpenVRCScaler) (coming soon)
   * [SizeOSC](https://anmeire.gumroad.com/l/sizeosc) (considering)
   * (More to be added as time goes on.)
 - Should work on Windows, Linux, macOS, Android/Quest (via Termux), and possibly on some other posix platforms.
   * But so far I only tested on Linux and Android.
 - If you want to, you can run VRChat and this program on separate devices.
   * Automatic connection with OSCQuery by default.
-  * Includes automatic workarounds for the Windows VRChat OSCQuery issue.
+  * Includes automatic workarounds for the VRChat Windows OSCQuery limitation.
 - Various commands, see [all commands](#all-commands).
 
 > [!NOTE]
@@ -40,12 +40,14 @@ A tool for control over the scale of your avatar on VRChat.
   - Windows users have to install this manually.
     - You can install it either from the [official Python website](https://www.python.org/downloads/windows/) or from the [Microsoft Store](https://apps.microsoft.com/detail/9pnrbtzxmb4z?ocid=webpdpshare).
     - If you see the option `Add to PATH` (or similar) during the installation, make sure it has been checked!
-  - On Linux, it is pre-installed. But if you have an older version, I can't say if it will work or not. **DO NOT MANUALLY UPDATE YOUR SYSTEM PYTHON!**
+  - On Linux, it is usually pre-installed. But if you have an older version, I can't say if it will work or not. **DO NOT MANUALLY UPDATE YOUR SYSTEM PYTHON!**
+    - If you're stuck with an older version of Python, and if you know Python, you can reduce the minimum required version down to 3.11 or even 3.10 by removing all type annotations and replacing tomllib.
+  - On Termux, install it by running `pkg install python -y` (`-y` is to skip the prompt).
   - You can check if python is installed and check its version by running
     - `python3 --version` or `python --version` (it's ok if at least one of them works)
 * Git
   - Git is not required for the main functions of the program but it is required for the recommended installation method and for the update script to work.
-  - Windows doesn't come with Git pre-installed but you can easily install Git by running `winget install --id Git.Git -e --source winget` then restarting your terminal.
+  - Windows doesn't come with Git pre-installed. To install Git, run `winget install --id Git.Git -e --source winget` then restart your terminal.
   - Many linux distros come with git pre-installed. But if you don't have it, here are the commands to install it based on your linux distro.
 
       - Linux Mint / Pop!_OS / Ubuntu / Kubuntu / Debian
@@ -75,7 +77,7 @@ A tool for control over the scale of your avatar on VRChat.
   - You can check if Git is installed and check its version by running `git --version`
 
 > [!WARNING]
-> Releaes (which can be found in `Tags`) are mainly for package managers. Please follow the recommended installation method below for the best experience on all supported platforms.
+> Releases (which can be found in `Tags`) are mainly for package managers. Please follow the recommended installation method below for the best experience on all supported platforms.
 
 ### Recommended installation method
 
@@ -95,7 +97,7 @@ A tool for control over the scale of your avatar on VRChat.
   * `python3 setup.py` or `python setup.py` or `py setup.py` (whichever works)
   * It will create a virtual environment (if it doesn't already exist).
   * Then it will install the dependencies in the virtual environment.
-  * On Linux, it also makes the `start.sh` executable.
+  * On Linux, it also marks `start.sh` as executable.
   * It will also create a desktop entry (if possible and supported).
     * Only supported on desktop linux distros, for now.
     * Append ` --no-desktop ` to skip desktop entry creation.
