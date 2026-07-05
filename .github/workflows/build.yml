@@ -16,24 +16,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
-            artifact-name: vrc-avi-scaler
-            output-ext: ".AppImage"
-          - os: ubuntu-latest
-            artifact-name: vrc-avi-scaler-nuitka
-            output-ext: ""
-          - os: ubuntu-latest
-            artifact-name: vrc-avi-scaler-pyinstaller
-            output-ext: ""
-          - os: windows-latest
-            artifact-name: vrc-avi-scaler
-            output-ext: ".msi"
-          - os: windows-latest
-            artifact-name: vrc-avi-scaler-nuitka
-            output-ext: ".exe"
-          - os: windows-latest
-            artifact-name: vrc-avi-scaler-pyinstaller
-            output-ext: ".exe"
+          - os: [ ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -101,12 +84,22 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.artifact-name }}
-          path: dist/${{ matrix.artificat-name}}${{ matrix.output-ext }}
+          name: binaries-${{ matrix.os }}
+          path: |
+            dist/*.AppImage
+            dist/*.msi
+            dist/*.exe
+            dist/vrc-avi-scaler-nuitka
+            dist/vrc-avi-scaler-pyinstaller
           retention-days: 30
 
       - name: Upload to Release (CX_Freeze)
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/${{ matrix.artifact-name }}${{ matrix.output-ext }}
+          files: |
+            dist/*.AppImage
+            dist/*.msi
+            dist/*.exe
+            dist/vrc-avi-scaler-nuitka
+            dist/vrc-avi-scaler-pyinstaller
 
