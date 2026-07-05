@@ -20,17 +20,17 @@ directory_table = [
 msi_data = {
     "Directory": directory_table,
     "ProgId": [
-        ("Prog.Id", "0.0.1", None, "Scale your avatar over OSC", "IconId", None),
+        ("Prog.Id", "0.0.5", None, "Scale your avatar over OSC", "IconId", None),
     ],
     "Icon": [
         ("IconId", "icon_windows.ico"),
     ],
     "Shortcut": [
         ("DesktopShortcut", "DesktopFolder", "VRChat Avatar Scaler",
-         "TARGETDIR", "[TARGETDIR]vrchat_avatar_scaler.exe",
+         "TARGETDIR", "[TARGETDIR]main.exe",
          None, None, None, None, None, None, "TARGETDIR"),
         ("StartMenuShortcut", "MyProgramMenu", "VRChat Avatar Scaler",
-         "TARGETDIR", "[TARGETDIR]vrchat_avatar_scaler.exe",
+         "TARGETDIR", "[TARGETDIR]main.exe",
          None, None, None, None, None, None, "TARGETDIR"),
     ],
 }
@@ -60,7 +60,7 @@ executables = [
 ]
 
 setup(name='vrc-avi-scaler',
-      version = '0.0.1',
+      version = '0.0.5',
       description = "Change your avatar's scale over osc",
       license = "MIT License",
       options = {
