@@ -14,8 +14,6 @@ class ConfigReadResult(Enum):
 
 def reset_config_file() -> None:
     newline = '\n'
-    if os.name == "nt":
-        newline = '\r\n'
     template = newline.join([
         f"# KutayX7's Avi Scaler main configuration file",
         f"",
