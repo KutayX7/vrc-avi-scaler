@@ -9,6 +9,9 @@ type CommandTemplate = list[
     list[CommandValueType]
 ]
 
+type Callback = Callable[..., None]
+type Predicate = Callable[[], bool]
+
 def always_true() -> bool:
     return True
 
@@ -174,6 +177,3 @@ class Command:
         args = self.parse(command)
         if self._callback:
             self._callback(self, args)
-
-type Callback = Callable[..., None]
-type Predicate = Callable[[], bool]
