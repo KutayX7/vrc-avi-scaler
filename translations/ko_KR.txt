@@ -1,0 +1,140 @@
+# Korean
+# Bit of a casual tone
+
+# Fallback translations.
+%%depends en,
+
+%choice.
+	no no,n,No,N,NO,아니,아니오,아니요,안돼요,ㄴㄴ,ㄴ
+	yes yes,y,Yes,Y,YES,네,예,ㅇㅇ,ㅇ
+
+command.
+	helptext.
+		autosave 종료 시 설정을 자동으로 저장해요.%\n참고: 앱을 강제로 종료한다면 저장할 수 없어요.
+
+		clear 터미널을 지워요.
+
+		configure 기본으로 설정된 편집기로 설정 파일을 열어요.
+
+		desktopmode VR 모드를 강제로 비활성화해요.
+
+		fix_osc_client 연결에 문제가 생겼을 때 해결할 수 있어요.
+
+		framerate 게임이 구동할 수 있을 최대 프레임을 설정해요.%\n예: fps 60
+
+		frequency 부드러운 크기 조정의 주파수를 설정해요.%\n변경하는 것은 권장하지 않아요.
+
+		help 명령어(들)에 대한 정보를 출력해요.
+
+		info 현재 사용 중인 아바타, 스케일링 값 및 제한을 출력해요.
+
+		instant 즉각 스케일링 모드로 전환해요.%\n's 0' 와 같은 역할을 해요.
+
+		lock_vrmode VR 모드의 자동 감지를 비활성화해요.
+
+		manuelsave 설정 자동 저장을 비활성화해요. 자세한 내용은 'help autosave'를 참고하세요.
+
+		maximum 월드에서 지원하는 최대 크기로 변경해요.
+		minimum 월드에서 지원하는 최소 크기로 변경해요.
+
+		nocompat 스케일링 프리팹 지원을 비활성화해요.
+
+		normal 아바타의 기본 키로 설정해요.
+
+		osc_debug OSC 로그를 활성화/비활성화해요.
+		osc_send OSC 메시지를 VRChat으로 전송해요. 문자열은 안돼요.%\n예: osc_send /example/path T F i123 f0.5
+
+		override 월드의 제한을 무시해요.%\n꼭 사용해야 할 필요가 없다면 사용하지 마세요!
+
+		quit 앱을 종료해요.
+
+		save 현재 설정을 저장해요.
+
+		smooth 부드러운 크기 조정 시간을 (초 단위로) 설정해요.%\n예: smooth 9%\n위 명령어는 부드러운 스케일 조정을 활성화하고 9초로 설정해요.
+
+		vrmode VR 모드를 강제로 활성화해요.
+
+config.
+	comment.
+		autosave 앱을 종료할 때 자동으로 설정을 저장해요.
+		compat 다른 스케일링 시스템들에 대한 지원 여부를 나타내요.
+		fps 게임이 구동할 수 있을 최대 프레임이에요. 인게임 FPS 제한값으로 설정하세요.
+	saved 설정을 저장했어요.
+	saving 설정 저장 중...
+	title KutayX7의 VRChat 아바타 스케일러 (vrc-avi-scaler)의 설정 파일
+
+main.
+	autosave.
+		info 종료 시 현재 설정이 저장돼요.
+		off 자동 저장을 비활성화했어요.
+		on 자동 저장을 활성화했어요.
+	can_close_terminal 이제 창/터미널을 닫아도 돼요.
+	feedback 문제 제보나 피드백은 %:link%s 에서 알려주세요.
+	framerate.
+		set_to 예상 프레임을 %:fps%r로 설정했어요.
+	frequency.
+		set_to 부드러운 크기 조정의 주파수를 %:frequency%rHz로 설정했어요.
+	info.
+		avatar 아바타:
+		calculated_base_eyeheight   계산된 기본 눈높이: %:height%l
+		current_eyeheight   현재 눈높이: %:height%l
+		current_scale_factor   현재 스케일 배율: %:factor%r배
+		mode.
+			desktop    모드: 데스크탑
+			desktop_manual    모드: 데스크탑 (수동)
+			vr    모드: VR
+			vr_manual    모드: VR (수동)
+		not_available   데이터를 가져올 수 없어요.
+		reload_avatar   아바타를 재적용해주세요.
+		scaling_disabled 월드에서 아바타 크기 조정을 비활성화했어요.
+		smooth_scaling.
+			disabled   부드러운 크기 조정이 비활성화됐어요. (즉각 스케일링 모드)
+			duration     시간: %:duration%r초
+			enabled   부드러운 크기 조정이 활성화됐어요.
+			frequency     주파수: %:frequency%rHz
+		tracking_type   트래킹 유형: %:tracking_type%I점 트래킹
+		world_eyeheight.
+			max   최대 눈높이: %:height%l
+			min   최소 눈높이: %:height%l
+			notice   참고: 이 제한을 초과할 수도 있어요.%\n        일부 월드만 실제로 제한을 적용해요.
+		world_limits 월드 제한:
+	init.
+		config.
+			acces_denied 접근이 거부되어 설정 파일을 열 수 없었어요.
+			continue 기본 설정을 사용할까요?%\n저장하지 않는 한 이미 저장되어 있는 설정을 덮어씌우지는 않아요.
+			corrupted 설정 파일이 깨진 것 같아요.%\n초기화할까요?
+			not_found 설정 파일이 없어요. 새로 생성할게요...
+	instant_scaling 즉각 스케일링 모드로 변경했어요.
+	invalid_argument 올바르지 않은 인수에요.
+	opening_config 설정 파일 여는 중...
+	osc_send.cant_parse_strings 문자열을 파싱할 수 없어요.
+	override.
+		forgot 월드의 제한값을 잊을게요 ;)
+		warning 이상하게 작동할 수도 있어요.
+	restart_complete 재시작을 완료했어요.
+	restarting 재시작 중...
+	sending_osc_message OSC 메시지 전송 중: %:message%s
+	scaling.
+		not_available_now 지금은 아바타 스케일 조정을 할 수 없어요.
+	set_eyeheight 눈높이를 %:height%l로 맞추는 중...
+	shutting_down 종료 중...
+	smooth_scaling.
+		duration 부드러운 크기 조정 시간을 %:duration%r초로 설정했어요.
+		enabled 부드러운 크기 조정을 활성화했어요.
+		invalid_duration 시간이 잘못되었거나 지정되지 않았어요.
+		reload_avatar 아바타를 재적용해주세요.
+	termux.
+		allow_external_apps Termux에서 실행 중인 것으로 보이지만, 'allow-external-apps'가 활성화되지 않았어요.%\n"#allow-external-apps = true"의 주석을 제거해서 (# 문자만 삭제) 활성화할 수 있어요.%\n현재 설정 파일 위치: %:config_path%s
+	to.
+		get_help "help"를 입력해서 사용 가능한 명령어들을 알아보세요.
+		quit 종료하려면 "quit"를 입력하세요.
+	unknown_command 알 수 없는 명령어에요. 'help'를 입력해서 사용 가능한 명령어들을 알아보세요.
+
+prompt.
+	options.
+		yes_NO 예 | [아니요] >
+		YES_no [예] | 아니요 >
+# capitalisation is for the default option, square brackets are used since Korean doesn't have capitalization
+
+translator.
+	load_fail 로케일 %:locale%s 로드에 실패했어요: %:error%s
