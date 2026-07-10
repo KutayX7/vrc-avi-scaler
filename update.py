@@ -1,6 +1,7 @@
 import subprocess
-import os
-import argparse
+from argparse import ArgumentParser
+from curses.ascii import iscntrl
+from shutil import which
 
 CURRENT: str = "current"
 MAIN: str = "main"
@@ -75,13 +76,12 @@ def _pull() -> int:
     return returncode
 
 def _setup() -> int:
+    print("[INFO] Locating python...")
+    python_path = which('python3') or which('python') or "python3"
+    print("[INFO] Found: ", python_path)
     print("[INFO] Running the setup script...")
     returncode: int = -1
-    match os.name:
-        case 'nt':
-            returncode = subprocess.run(["python", "setup.py"]).returncode
-        case _:
-            returncode = subprocess.run(["python3", "setup.py"]).returncode
+    returncode = subprocess.run([python_path, "setup.py"]).returncode
     if returncode == 0:
         print("[INFO] Setup success.")
     else:
@@ -95,17 +95,53 @@ def force_upgrade(*, branch: str = CURRENT) -> int:
             _setup() or
             0)
 
+def _is_full_commit_hash(string: str) -> bool:
+    if len(string) == 40:
+        hex_chars = "0123456789ABCDEFabcdef"
+        for char in string:
+            if char not in hex_chars:
+                return False
+        return True
+    else:
+        return False
+
 def _validate_branch_name(branch: str) -> bool:
-    chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789"
+    forbidden_chars = " ~^*:?[\\"
+    if not branch:
+        return False
+    if branch == "@":
+        return False
     for char in branch:
-        if char in chars:
-            pass
-        else:
+        if char in forbidden_chars:
             return False
-    return len(branch) < 100 and len(branch) > 0
+        if iscntrl(char):
+            return False
+    if ".." in branch:
+        return False
+    if "/." in branch:
+        return False
+    if "//" in branch:
+        return False
+    if "@{" in branch:
+        return False
+    if branch.startswith("refs/"):
+        return False
+    if branch.endswith(".lock"):
+        return False
+    if branch[0] == "-":
+        return False
+    if branch[0] == "." or branch[-1] == ".":
+        return False
+    if branch[0] == "/" or branch[-1] == "/":
+        return False
+    if branch in ["HEAD", "FETCH_HEAD", "ORIG_HEAD", "MERGE_HEAD"]:
+        return False
+    if _is_full_commit_hash(branch):
+        return False
+    return True
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         prog = "VRChat Avi Scaler self-upgrade",
         description = "Updates the program to the latest version.",
     )
@@ -114,16 +150,13 @@ if __name__ == "__main__":
     args, _ = parser.parse_known_args()
     branch = args.branch
     yes = args.yes
-
     if not _validate_branch_name(branch):
         print("[WARNING] Invalid branch name.")
         branch = CURRENT
-
     print( "VRChat Avi Scaler self-upgrade system.")
-    print( "[WARNING] This is an experimental feature. Things may go very wrong!")
     print(f"The program will be upgraded to the latest version from the {branch} branch.")
     print( "This only works if you cloned the repository and did not delete the .git folder.")
-    print( "This WILL discard your modifications and quite possibly your config, and (re-)install the latest version, even if you're on the latest version already.")
+    print( "This WILL discard your modifications and quite possibly your config, and (re-)install the latest version on that branch, even if you're on the latest version already.")
     if yes or input("Please type y and press Enter to continue: ").strip() == "y":
         if force_upgrade(branch=branch) == 0:
             print("Upgrade success.")

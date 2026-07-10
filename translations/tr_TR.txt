@@ -1,0 +1,125 @@
+# Turkish (Türkiye)
+# Türkçe (Türkiye)
+
+# Fallback translations
+%%depends en,
+
+%choice.
+	no no,n,No,N,NO,hayır,hayir,h,Hayır,Hayir,H,HAYİR,HAYIR
+	yes yes,y,Yes,Y,YES,evet,e,Evet,E,EVET
+
+command.
+	helptext.
+		autosave Program kapanışında otomatik olarak yapılandırma kaydetme modunu aktif eder.%\nNot: Programı zorla kapatırsanız kaydolmaz.
+
+		clear Terminali temizler.
+
+		configure Yapılandırma dosyasını varsayılan metin düzenleyicisinde açar.
+
+		desktopmode Masaüstü moduna geçer. (VRMode = 0)
+
+		fix_osc_client Bazı durumlarda bağlantı sorunlarını çözebilir.
+
+		framerate Beklenen maksimum FPS değerini belirler.%\Örnek: fps 60
+
+		frequency Yumuşak boy değiştirme frekansını ayarlar.%\nBunu kullanmayı önermiyoruz.
+
+		help Bir komut hakkında bilgiyi ya da kullanılabilir komutları gösterir.
+
+		info Avatarın, parametreler, ve sınırlamalar hakkında bilgileri gösterir.
+
+		instant Ani boy değiştirme moduna geçer.%\nDaha kısa olarak: s 0
+
+		lock_vrmode Masaüstü/VR (VRMode) otomatik algılamasını devre dışı bırakır.
+
+		manuelsave Otomatik yapılandırma kaydetmeyi devre dışı bırakır. Bakınız: help autosave
+
+		maximum Boyunuzu dünya tarafından belirlenen maksimum boya ayarlar.
+		minimum Boyunuzu dünya tarafından belirlenen minimum boya ayarlar.
+
+		normal Avatarınızı normal boyuna getirir.
+
+		override Dünya kısıtlamalırını unutur. Bazı sorunları aşmak için kullanılabilir.%\nLütfen iyi bir sebebiniz yoksa bunu kullanmayın.
+
+		quit Uygulamadan çıkar.
+
+		save Yapılandırmayı kaydeder.
+
+		smooth Yumuşak boy değiştirme süresini ayarlar (saniye cinsinden).%\nÖrnek: smooth 9%\nYumuşak boy değiştirme modunu aktif eder ve süresini 9 saniyeye ayarlar.
+
+		vrmode VR moduna geçer. (VRMode = 1)
+
+config.
+	saved Yapılandırma kaydedildi.
+	saving Yapılandırma kaydediliyor...
+
+main.
+	autosave.
+		info Yapılandırma program çıkışında kaydedilecek.
+		off Otomatik kaydetme devre dışı bırakıldı.
+		on Otomatik kaydetme aktif edildi.
+	can_close_terminal Pencereyi ya da terminali kapatabilirsiniz.
+	feedback Sorunlar ve geri bildirim için: %:link%s
+	framerate.
+		set_to Beklenen FPS kapasitesi %:fps%r olarak ayarlandı.
+	frequency.
+		set_to Yumuşak boy değiştirme frekansı %:frequency%r Hz olarak ayarlandı.
+	info.
+		avatar Avatar:
+		calculated_base_eyeheight   Hesaplanan temel boy: %:height%l
+		current_eyeheight   Mevcut göz yüksekliği: %:height%l
+		current_scale_factor   Mevcut boy faktörü: x%:factor%r
+		mode.
+			desktop   Mod: Masaüstü
+			desktop_manual   Mod: Masaüstü (manuel)
+			vr   Mod: VR
+			vr_manual   Mod: VR (manuel)
+		not_available   Veri mevcut değil.
+		reload_avatar   Lütfen avatarınızı yeniden yükleyin. (reload)
+		scaling_disabled Boyut değiştirme dünya tarafından kısıtlı.
+		smooth_scaling.
+			disabled   Yumuşak boy değiştirme devre dışı.
+			duration     Süre: %:duration%r saniye
+			enabled   Yumuşak boy değiştirme aktif.
+			frequency     Frekans: %:frequency%r Hz
+		tracking_type   Takip tipi: %:tracking_type%I nokta takibi
+		world_eyeheight.
+			max   Maksimum göz yüksekliği: %:height%l
+			min   Minimum göz yüksekliği: %:height%l
+			notice   Not: Bu limitlerin ötesine geçebilirsiniz.%\n       Sadece bazı dünyalar bunları zorla uygular.
+		world_limits Dünya kısıtlamaları:
+	init.
+		config.
+			acces_denied Yapılandırma dosyasına erişilemedi. Erişim reddedildi.
+			continue Varsayılan yapılandırmayla devam etmek ister misiniz?%\nYeni yapılandırmayı kaydetmediğiniz sürece bu işlem yapılandırma dosyasının üzerine yazmayacaktır.
+			corrupted Yapılandırma dosyası bozulmuş gibi görünüyor.%\nSıfırlamak ister misiniz?
+			not_found Yapılandırma dosyası bulunamadı. Yeni bir dosya oluşturuluyor...
+	instant_scaling Ani boy değiştirme moduna geçildi.
+	invalid_argument Geçersiz argüman.
+	opening_config Yapılandırma dosyası açılıyor...
+	override.
+		forgot Dünya kısıtlamaları unutuldu ;)
+		warning Tuhaf davranışlar gözlemleyebilirsiniz.
+	scaling.
+		not_available_now Boy değiştirme şu anda kullanılabilir değil.
+	set_eyeheight Göz yüksekliği %:height%l olarak ayarlanıyor...
+	shutting_down Program kapatılıyor...
+	smooth_scaling.
+		duration Yumuşak boy değiştirme süresi %:duration%r saniye olarak ayarlandı.
+		enabled Yumuşak boy değiştirme aktif edildi.
+		invalid_duration Süre belirlenmedi ya da hatalı.
+		reload_avatar Lütfen avatarınızı yeniden yükleyin (reload).
+	termux.
+		allow_external_apps Bunu Termux'da kullanıyor gibi görünüyorsunuz ama allow-external-apps aktif değil.%\n~/.termux/termux-properties dosyasını açıp "#allow-external-apps = true" satırındaki # sembolünü silerek aktif edebilirsiniz.%\nŞu anki yapılandırma dosya yolu: %:config_path%s
+	to.
+		get_help "help" yazarak komut listesini görebilirsiniz.
+		quit "quit" yazarak programdan çıkabilirsiniz.
+	unknown_command Bilinmeyen komut.%\nhelp yazarak komut listesini görebilirsiniz.
+
+prompt.
+	options.
+		yes_NO evet | Hayır >
+		YES_no Evet | hayır >
+
+translator.
+	load_fail %:locale%s dili yüklenemedi : %:error%s

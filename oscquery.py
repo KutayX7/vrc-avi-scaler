@@ -141,6 +141,8 @@ class OSCQueryListener(ServiceListener):
                     client.reconnect(address, client.port)
 
 def start_listener() -> None:
+    if globals.oscquery_listener:
+        return
     oscquery_listener = OSCQueryListener()
     browser = ServiceBrowser(zeroconf, "_oscjson._tcp.local.", oscquery_listener)
     globals.oscquery_listener = oscquery_listener
@@ -170,6 +172,8 @@ def _start_service(ip: str, port: int) -> None:
     globals.oscquery_service = oscquery_service
 
 def start_service() -> None:
+    if globals.oscquery_service:
+        return
     service_ip = get_ip_address()
     service_port = get_free_port()
     globals.oscquery_service_ip = service_ip

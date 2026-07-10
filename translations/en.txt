@@ -1,0 +1,140 @@
+# English (global)
+
+# Fallback translations.
+# This is the default so there's none.
+%%depends ,
+
+%choice.
+	no no,n,No,N,NO
+	yes yes,y,Yes,Y,YES
+
+command.
+	helptext.
+		autosave Enables autosave which automatically saves the configuration on exit.%\nNote: Force closing the application won't save the configuration.
+
+		clear Clear the terminal.
+
+		configure Opens the configuration file in your default text editor.
+
+		desktopmode Force unset VRmode.
+
+		fix_osc_client Can fix some connection issues in rare cases.
+
+		framerate Set the maximum expected framerate.%\nExample: fps 60
+
+		frequency Sets smooth scaling frequency.%\nIt's not recommended to do this.
+
+		help Get information about a command or a list of commands.
+
+		info Shows information about your avatar, current scaling parameters, and limits.
+
+		instant Switches to instant scaling mode.%\nEqual to: s 0
+
+		lock_vrmode Disables automatic detection of VRMode.
+
+		manuelsave Disables autosave. See: help autosave
+
+		maximum Scale to the maximum height set by the world.
+		minimum Scale to the minimum height set by the world.
+
+		nocompat Disables scaling prefab compatibility.
+
+		normal Scale to your avatar's default height.
+
+		osc_debug Toggles OSC logging.
+		osc_send Send a custom OSC message to VRChat. No strings.%\nExample: osc_send /example/path T F i123 f0.5
+
+		override Forgets world limits. May be used to get around some glitches.%\nDon't use if you don't have a good reason to.
+
+		quit Exit the application.
+
+		save Saves the current configuration.
+
+		smooth Sets smooth scaling duration (in seconds).%\nExample: smooth 9%\nActivates smooth scaling and sets it to 9 seconds.
+
+		vrmode Force set VRmode.
+
+config.
+	comment.
+		autosave Automatically save the configuration on exit
+		compat Compatibility with third-party scaling systems
+		fps Maximum expected framerate. Set this to your FPS limit.
+	saved Saved config.
+	saving Saving config...
+	title Main configuration file of KutayX7's VRChat Avi Scaler (vrc-avi-scaler)
+
+main.
+	autosave.
+		info The current configuration will be saved on exit.
+		off Turned off autosave.
+		on Turned on autosave.
+	can_close_terminal Feel free to close the window/terminal.
+	feedback For issues and feedback, visit %:link%s
+	framerate.
+		set_to Epected FPS set to %:fps%r
+	frequency.
+		set_to Smooth scaling step frequency set to %:frequency%r Hz
+	info.
+		avatar Avatar:
+		calculated_base_eyeheight   Calculated base eye height: %:height%l
+		current_eyeheight   Current eye height: %:height%l
+		current_scale_factor   Current scale factor: x%:factor%r
+		mode.
+			desktop   Mode: Desktop
+			desktop_manual   Mode: Desktop (manual)
+			vr   Mode: VR
+			vr_manual   Mode: VR (manual)
+		not_available   Data not available.
+		reload_avatar   Please reload your avatar.
+		scaling_disabled Avatar scaling is currently disabled by the world.
+		smooth_scaling.
+			disabled   Smooth scaling is disabled. (Instant scaling mode.)
+			duration     Duration: %:duration%rs
+			enabled   Smooth scaling is enabled.
+			frequency     Frequency: %:frequency%r Hz
+		tracking_type   Tracking type: %:tracking_type%I point tracking
+		world_eyeheight.
+			max   Max eye height: %:height%l
+			min   Min eye height: %:height%l
+			notice   Note: You may be able to go over these limits.%\n        Only some worlds actually enforce them.
+		world_limits World limits:
+	init.
+		config.
+			acces_denied Could not access the config file. Access denied.
+			continue Would you like to continue with the default config?%\nThis will not overwrite the config file unless you save the new configuration.
+			corrupted Config file seems to be corrupted.%\nWould you like to reset it?
+			not_found Config file not found. Creating one...
+	instant_scaling Switched to instant scaling mode.
+	invalid_argument Invalid argument.
+	opening_config Opening configuration file...
+	osc_send.cant_parse_strings Can't parse strings.
+	override.
+		forgot Forgot the world limits ;)
+		warning You may encounter weird behavior.
+	restart_complete Restart complete.
+	restarting Restarting...
+	sending_osc_message Sending OSC message: %:message%s
+	scaling.
+		not_available_now Avatar scaling is not available right now.
+	set_eyeheight Setting eye height to %:height%l...
+	shutting_down Shutting down the program...
+	smooth_scaling.
+		duration Smooth scaling duration set to %:duration%rs
+		enabled Enabled smooth scaling.
+		invalid_duration Duration is unspecified/invalid.
+		reload_avatar Please reload your avatar.
+	termux.
+		allow_external_apps It seems like you're running this in Termux but you don't have allow-external-apps enabled.%\nYou can enable it in ~/.termux/termux-properties by uncommenting (remove the #) the line "#allow-external-apps = true"%\nCurrent configuration file location: %:config_path%s
+	to.
+		get_help Type "help" to see a list of commands.
+		quit Type "quit" to quit.
+	unknown_command Unknown command. Type help to see a list of available commands.
+
+prompt.
+	options.
+		yes_NO yes | No >
+		YES_no Yes | no >
+# capitalisation is for the default option
+
+translator.
+	load_fail Could not load locale %:locale%s : %:error%s

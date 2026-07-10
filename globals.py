@@ -1,12 +1,11 @@
 
-# Check out `data/config.toml` for configuration.
-# The program will prompt you to create it if
-# it doesn't exist or overwrite it if it got corrupted.
+# Check out the `config` command to find the real configuration file.
 
 # PLEASE DON'T MODIFY THIS FILE
 # UNLESS YOU KNOW WHAT YOU'RE DOING!
-# Don't report an issue if you modified this file.
+# Please don't make a bug report if you modified this file.
 
+from translator import Translator
 from simple_types import Any, Height, ScaleFactor, ParameterValue, TrackingType
 
 # General
@@ -29,7 +28,12 @@ compat_openvrcs: bool = True # OpenVRCScaler
 MIN_EYEHEIGHT: Height =     0.01
 MAX_EYEHEIGHT: Height = 10000.0
 
+# Locale
+preferred_locale: str = "auto"
+preferred_unit_of_length: str = "metres"
+
 # Internal (PLEASE DO NOT TOUCH)
+config: Any = None
 server: Any = None
 client: Any = None
 current_eyeheight: Height = 0.0
@@ -59,3 +63,5 @@ oscquery_http_server: Any = None
 osc_detected_VRChat_ip: str = ""
 auto_apply_client_fix: bool = False
 vrmode_lock: bool = False
+translator: Any = None
+commands: set[Any] = set() # to be replaced at runtime
