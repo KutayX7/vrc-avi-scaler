@@ -5,7 +5,7 @@ import tomllib
 from enum import Enum
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any
+from typing import Any, Self
 import globals
 from translator import Translator
 
@@ -49,9 +49,9 @@ def get_config_dir_path() -> Path:
             pass
     return dir_path.resolve()
 
-class Config():
+class Config:
     _open_paths: set[Path] = set()
-    def __init__(self, path: Path = get_config_dir_path() / MAIN_CONFIG_FILENAME):
+    def __init__(self, path: Path = get_config_dir_path() / MAIN_CONFIG_FILENAME) -> None:
         path = path.resolve()
         if path in Config._open_paths:
             raise Exception(f"There can only be one config object active on one file. File: {path}")
@@ -214,7 +214,7 @@ class Config():
             self._dirty = True
         data[key] = value
 
-    def register(self, key: str, default: Any) -> Config:
+    def register(self, key: str, default: Any) -> Self:
         if not isinstance(default, (bool, int, float, str)):
             raise Exception("Invalid type.")
         self._registry[key] = default

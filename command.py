@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Self
 from collections.abc import Callable
 
 type CommandValueType = bool|int|float|range|str
@@ -81,15 +81,15 @@ class Command:
         # TODO: Implement command completion
         return []
 
-    def alias(self, alias: str) -> Command:
+    def alias(self, alias: str) -> Self:
         self._aliases.add(alias)
         return self
 
-    def bind(self, callback: Callback) -> Command:
+    def bind(self, callback: Callback) -> Self:
         self._callback = callback
         return self
 
-    def available_when(self, predicate: Any) -> Command:
+    def available_when(self, predicate: Any) -> Self:
         self._predicate = predicate
         return self
 
