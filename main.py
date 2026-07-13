@@ -9,6 +9,7 @@ from simple_types import ParameterValue, Height, Any
 from scaling_utils import get_base_eyeheight, parse_to_meters, is_valid_float
 from translator import translator, printl
 from command import Command
+from task import Task, task_manager
 
 FEEDBACK_URL = "https://github.com/KutayX7/vrc-avi-scaler/issues"
 
@@ -81,7 +82,7 @@ def command_desktopmode(*_: list[Any]) -> None:
 
 def command_lock_vrmode(*_: list[Any]) -> None:
     globals.vrmode_lock = True
-    printl("main.vrmode_locked_to", vrmode=globals.VRMode)
+    printl("main.vrmode_locked_to", vrmode=int(globals.VRMode))
 
 def command_nocompat(*_: list[Any]) -> None:
     globals.compat_killswitch = True
@@ -237,6 +238,29 @@ def command_configure(*_: list[Any]) -> None:
         printl("main.opening_config")
         globals.config.show_in_file_explorer()
 
+def command_delay(_: Command, args: list[Any]) -> None:
+    if len(args) < 3:
+        printl("main.invalid_argument")
+        return
+    delay: float = args[1]
+    if isinstance(delay, int):
+        delay = float(delay)
+    if not isinstance(delay, float):
+        printl("main.invalid_argument")
+        return
+    str_args: list[str] = [str(args[2])]
+    for arg in args[3:]:
+        if isinstance(arg, str):
+            str_args.append(f'"{arg.replace("\\", "\\\\").replace("\"", "\\\"")}"')
+        else:
+            str_args.append(str(arg))
+    full_command = " ".join(str_args)
+    task = (Task("delayed_command")
+        .attach_callback(process_command)
+        .add_arg(full_command)
+    )
+    task_manager.add_task(task, delay)
+
 # TODO: Move command implementations to a different file
 
 globals.commands = {
@@ -263,6 +287,7 @@ globals.commands = {
     Command("autosave", set()).bind(command_autosave),
     Command("manuelsave", {"manualsave", "noautosave"}).bind(command_manuelsave),
     Command("configure", {"config", "conf", "cfg"}).bind(command_configure),
+    Command("delay", {"d"}).bind(command_delay),
 }
 
 def process_command(full_command: str) -> None:
@@ -337,7 +362,11 @@ def main() -> None:
 
     while True:
         try:
-            process_command(input(""))
+            user_input = input("")
+            commands = Command.separate_commands(user_input)
+            for command in commands:
+                if command:
+                    process_command(command)
         except EOFError:
             # not running in a terminal
             break

@@ -46,6 +46,36 @@ class Command:
         helptext += globals.translator.translate(self.helptext_translation_key)
         return helptext
 
+    @staticmethod
+    def separate_commands(line: str) -> list[str]:
+        commands: list[str] = []
+        quoted_string = False
+        escape = False
+        command: str = ""
+        for char in line:
+            match char:
+                case "\\":
+                    if escape:
+                        command += char
+                    escape = not escape
+                case '"':
+                    if escape:
+                        command += '"'
+                    else:
+                        quoted_string = not quoted_string
+                case ";":
+                    if escape or quoted_string:
+                        command += char
+                    else:
+                        commands.append(command)
+                        command = ""
+                case _:
+                    command += char
+        if command:
+            commands.append(command)
+            command = ""
+        return commands
+
     def add_template(self, types: CommandTemplate) -> None:
         template: CommandTemplate = []
         self._templates.append(template)

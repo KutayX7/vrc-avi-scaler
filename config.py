@@ -7,15 +7,13 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Self
 import globals
-from translator import Translator
+from translator import translator
 
 # TODO: Remove "globals" usage here
 
 MAIN_CONFIG_FILENAME: str = "config.toml"
 
-config_translator = Translator()
-config_translator.set_locale("auto")
-_ = config_translator.translate
+_ = translator.translate
 
 class ConfigLoadResult(Enum):
     SUCCESS = 0
@@ -141,7 +139,7 @@ class Config:
                     nonlocal f
                     flat_key = ".".join(key_path)
                     translation_key = "config.comment." + flat_key.replace(" ", "_")
-                    if config_translator.has_key(translation_key):
+                    if translator.has_key(translation_key):
                         comment = _(translation_key)
                         f.write("# " + comment + "\n")
                     if isinstance(value, dict):
@@ -255,7 +253,7 @@ def read_config() -> ConfigLoadResult:
     status = config.load()
     if status != ConfigLoadResult.SUCCESS:
         return status
-    
+
     globals.FPS = config.get('fps')
     globals.smooth_scaling_step_frequency = globals.FPS * 4.0
     globals.save_config_on_exit = config.get('autosave')
@@ -271,9 +269,9 @@ def read_config() -> ConfigLoadResult:
     globals.compat_openvrcs = config.get("compat.OpenVRCScaler")
 
     globals.preferred_locale = config.get("localisation.locale")
-    
-    config_translator.set_locale(globals.preferred_locale)
-    if globals.translator:
+
+    translator.set_locale(globals.preferred_locale)
+    if globals.translator and globals.translator != translator:
         globals.translator.set_locale(globals.preferred_locale)
 
     return ConfigLoadResult.SUCCESS

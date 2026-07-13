@@ -4,6 +4,7 @@ from pythonosc.udp_client import SimpleUDPClient
 import globals
 from scaling_utils import quantize_height, clamp_eyeheight
 from simple_types import Height, ParameterValue, Any
+from translator import printl
 
 class Client:
     def __init__(self, ip: str, port: int):
@@ -16,7 +17,7 @@ class Client:
         self._client = SimpleUDPClient(ip, port)
         self.ip = ip
         self.port = port
-        print(f"OSC client address changed to {ip}:{port}")
+        printl("client.address_changed", address=f"{ip}:{port}")
 
     def send_message(self, address: str, value: Any) -> None:
         self._client.send_message(address, value)
@@ -42,7 +43,7 @@ class Client:
             return
         if globals.current_scale_factor > 0:
             return
-        print("Doing an automatic avatar height check...")
+        printl("client.auto_height_check.begin")
         temp_eyeheight = current_eyeheight - 0.0015
         if current_eyeheight < 1:
             temp_eyeheight += 0.003
@@ -50,13 +51,13 @@ class Client:
         sleep(0.1)
         self._set_eyeheight_instantly(current_eyeheight)
         sleep(0.2)
-        print("Height check complete.")
+        printl("client.auto_height_check.complete")
         if globals.current_scale_factor > 0:
-            print("Result: SUCCESS")
+            printl("client.auto_height_check.result.success")
         else:
-            print("Result: FAIL")
-            delay += 1
-            print(f"Retrying in {delay} seconds...")
+            printl("client.auto_height_check.result.fail")
+            delay += 1.0
+            printl("client.auto_height_check.retry", time=delay)
             self.refresh_eyeheight(delay)
 
     def set_eyeheight(self, target_eyeheight: Height, duration: float = 0.0) -> None:
@@ -89,5 +90,5 @@ class Client:
 
 def start_client(ip: str, port: int) -> Client:
     client = Client(ip, port)
-    print(f"Started OSC client on {ip}:{port}")
+    printl("client.started", address=f"{ip}:{port}")
     return client

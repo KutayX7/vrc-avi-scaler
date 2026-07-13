@@ -4,6 +4,7 @@ from pythonosc import osc_server
 import globals
 import compat
 from simple_types import Any, Callback
+from translator import printl
 
 class Server:
     def __init__(self, ip: str, port: int):
@@ -34,16 +35,16 @@ def set_vrmode(vrmode: bool, force: bool = False) -> None:
         return
     if vrmode:
         if not globals.VRMode:
-            print("Switched to VR mode.")
+            printl("server.vrmode.1")
         globals.VRMode = True
     else:
         if globals.VRMode:
-            print("Switched to non-VR mode.")
+            printl("server.vrmode.0")
         globals.VRMode = False
 
 def avatar_change_handler(address: str, *args: tuple[Any]) -> None:
     set_vrmode(False)
-    print("Avatar has been changed.")
+    printl("server.avatar_changed")
     if globals.current_scale_factor <= 0:
         globals.client.refresh_eyeheight()
 
@@ -66,10 +67,10 @@ def scaling_allowed_handler(address: str, *args: tuple[Any]) -> None:
     if isinstance(world_scaling_allowed, bool):
         if world_scaling_allowed:
             if not globals.world_scaling_allowed:
-                print("Avatar scaling has been \033[0;32menabled\033[0m.")
+                printl("server.scaling_enabled")
         else:
             if globals.world_scaling_allowed:
-                print("Avatar scaling has been \033[0;31mdisabled\033[0m.")
+                printl("server.scaling_disabled")
         globals.world_scaling_allowed = world_scaling_allowed
 
 def eyeheight_handler(address: str, *args: tuple[Any]) -> None:
@@ -79,7 +80,7 @@ def eyeheight_handler(address: str, *args: tuple[Any]) -> None:
     if isinstance(height, float) and height > 0.0:
         if (globals.current_eyeheight != height and
             (height == globals.target_eyeheight or (not globals.scaling))):
-            print("New eye height: " + str(height) + " m")
+            printl("server.new_eyeheight", height=height)
         globals.current_eyeheight = height
 
 def scalefactor_handler(address: str, *args: tuple[Any]) -> None:

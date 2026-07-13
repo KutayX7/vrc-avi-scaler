@@ -8,6 +8,17 @@
 	no no,n,No,N,NO,hayır,hayir,h,Hayır,Hayir,H,HAYİR,HAYIR
 	yes yes,y,Yes,Y,YES,evet,e,Evet,E,EVET
 
+client.
+	address_changed OSC client adresi %:address%s olarak değiştirildi.
+	auto_height_check
+		begin Otomatik boy ölçümü yapılıyor...
+		complete Boy ölçümü tamamlandı.
+		result.
+			fail Sonuç: %.COLOUR.FG.green%BAŞARILI%.COLOUR.RESET%
+			success Sonuç: %.COLOUR.FG.green%BAŞARISIZ%.COLOUR.RESET%
+		retry %:time%r saniye içinde tekrar denenecek...
+	started OSC client %:address%s adresinde başlatıldı.
+
 command.
 	helptext.
 		autosave Program kapanışında otomatik olarak yapılandırma kaydetme modunu aktif eder.%\nNot: Programı zorla kapatırsanız kaydolmaz.
@@ -15,6 +26,8 @@ command.
 		clear Terminali temizler.
 
 		configure Yapılandırma dosyasını varsayılan metin düzenleyicisinde açar.
+
+		delay Kullanım: delay <saniye> [komut...]%\nİstenilen komutu belirtilen süreden sonra yürütür.
 
 		desktopmode Masaüstü moduna geçer. (VRMode = 0)
 
@@ -37,7 +50,12 @@ command.
 		maximum Boyunuzu dünya tarafından belirlenen maksimum boya ayarlar.
 		minimum Boyunuzu dünya tarafından belirlenen minimum boya ayarlar.
 
+		nocompat Boy değiştirme prefabı uyumluluğunu devre dışı bırakır.
+
 		normal Avatarınızı normal boyuna getirir.
+
+		osc_debug OSC mesaj kaydını açar/kapatır.
+		osc_send VRChat'e yapay bir OSC mesajı gönderir.%\Örnek: osc_send /example/path T F i123 f0.5
 
 		override Dünya kısıtlamalırını unutur. Bazı sorunları aşmak için kullanılabilir.%\nLütfen iyi bir sebebiniz yoksa bunu kullanmayın.
 
@@ -50,8 +68,13 @@ command.
 		vrmode VR moduna geçer. (VRMode = 1)
 
 config.
+	comment.
+		autosave Yapılandırmayı program çıkışında otomatik olarak kaydeder
+		compat Üçüncü parti boy değiştirme prefableriyle uyumluluk
+		fps Maksimum beklenen kare hızı (FPS). Bunu VRChat'teki FPS limitinize göre ayarlayın.
 	saved Yapılandırma kaydedildi.
 	saving Yapılandırma kaydediliyor...
+	title KutayX7's VRChat Avi Scaler (vrc-avi-scaler) ana yapılandırma dosyası
 
 main.
 	autosave.
@@ -97,9 +120,11 @@ main.
 	instant_scaling Ani boy değiştirme moduna geçildi.
 	invalid_argument Geçersiz argüman.
 	opening_config Yapılandırma dosyası açılıyor...
+	osc_send.cant_parse_strings String kullanılamaz.
 	override.
 		forgot Dünya kısıtlamaları unutuldu ;)
 		warning Tuhaf davranışlar gözlemleyebilirsiniz.
+	sending_osc_message OSC mesajı gönderiliyor: %:message%s
 	scaling.
 		not_available_now Boy değiştirme şu anda kullanılabilir değil.
 	set_eyeheight Göz yüksekliği %:height%l olarak ayarlanıyor...
@@ -115,11 +140,31 @@ main.
 		get_help "help" yazarak komut listesini görebilirsiniz.
 		quit "quit" yazarak programdan çıkabilirsiniz.
 	unknown_command Bilinmeyen komut.%\nhelp yazarak komut listesini görebilirsiniz.
+	vrmode_locked_to VRMode %:vrmode%I olarak kilitlendi.
+
+oscquery.
+	failed_to_get_OSC_info VRChat'den OSC bilgisi alınamadı. %:error%s
+	listener.
+		detected_VRChat %:address%s adresinde VRChat OSCQuery servisi algılandı.
+		service_removed VRChat OSCQuery servisi kaldırıldı.
+	service.
+		starting OSCQuery servisi %:address%s adresinde başlatılıyor.
 
 prompt.
 	options.
 		yes_NO evet | Hayır >
 		YES_no Evet | hayır >
+# capitalisation is for the default option
+
+server.
+	avatar_changed Avatar değişikliği algılandı.
+	new_eyeheight Yeni göz yüksekliği: %:height%l
+	scaling_
+		disabled Boy değiştirme %.BOLD%%.COLOUR.FG.red%devre dışı%.COLOUR.RESET%.
+		enabled Boy değiştirme %.BOLD%%.COLOUR.FG.green%kullanılabilir%.COLOUR.RESET%.
+	vrmode.
+		0 VR-dışı moda geçildi.
+		1 VR moduna geçildi.
 
 translator.
 	load_fail %:locale%s dili yüklenemedi : %:error%s

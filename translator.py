@@ -262,5 +262,5 @@ class Translator:
 
 translator: Translator = Translator()
 
-def printl(key: str, *args: tuple[Any], **kwargs: dict[Any]) -> None:
+def printl(key: str, *args: Any, **kwargs: Any) -> None:
     print(translator.translate(key, *args, **kwargs))

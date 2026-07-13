@@ -8,6 +8,17 @@
 	no no,n,No,N,NO
 	yes yes,y,Yes,Y,YES
 
+client.
+	address_changed OSC client address changed to %:address%s
+	auto_height_check
+		begin Doing an automatic avatar height check...
+		complete Height check complete.
+		result.
+			fail Result: %.COLOUR.FG.green%FAIL%.COLOUR.RESET%
+			success Result: %.COLOUR.FG.green%SUCCESS%.COLOUR.RESET%
+		retry Retrying in %:time%r seconds...
+	started Started OSC client on %:address%s
+
 command.
 	helptext.
 		autosave Enables autosave which automatically saves the configuration on exit.%\nNote: Force closing the application won't save the configuration.
@@ -15,6 +26,8 @@ command.
 		clear Clear the terminal.
 
 		configure Opens the configuration file in your default text editor.
+
+		delay Usage: delay <seconds> [command...]%\nExecutes the command after the set amount of seconds.
 
 		desktopmode Force unset VRmode.
 
@@ -42,7 +55,7 @@ command.
 		normal Scale to your avatar's default height.
 
 		osc_debug Toggles OSC logging.
-		osc_send Send a custom OSC message to VRChat. No strings.%\nExample: osc_send /example/path T F i123 f0.5
+		osc_send Send a custom OSC message to VRChat.%\nExample: osc_send /example/path T F i123 f0.5
 
 		override Forgets world limits. May be used to get around some glitches.%\nDon't use if you don't have a good reason to.
 
@@ -111,8 +124,6 @@ main.
 	override.
 		forgot Forgot the world limits ;)
 		warning You may encounter weird behavior.
-	restart_complete Restart complete.
-	restarting Restarting...
 	sending_osc_message Sending OSC message: %:message%s
 	scaling.
 		not_available_now Avatar scaling is not available right now.
@@ -129,6 +140,7 @@ main.
 		get_help Type "help" to see a list of commands.
 		quit Type "quit" to quit.
 	unknown_command Unknown command. Type help to see a list of available commands.
+	vrmode_locked_to VRMode has been locked to %:vrmode%I.
 
 oscquery.
 	failed_to_get_OSC_info Failed to get OSC info from VRChat. %:error%s
@@ -144,5 +156,29 @@ prompt.
 		YES_no Yes | no >
 # capitalisation is for the default option
 
+server.
+	avatar_changed Avatar has been changed.
+	new_eyeheight New eyeheight: %:height%l
+	scaling_
+		disabled Avatar scaling has been %.BOLD%%.COLOUR.FG.red%disabled%.COLOUR.RESET%.
+		enabled Avatar scaling has been %.BOLD%%.COLOUR.FG.green%enabled%.COLOUR.RESET%.
+	vrmode.
+		0 Switched to non-VR mode.
+		1 Switched to VR mode.
+
 translator.
 	load_fail Could not load locale %:locale%s : %:error%s
+
+ANSI.
+	CSI %.ANSI.ESC%[
+	ESC %\1b%
+
+BOLD %.ANSI.CSI%1m
+
+COLOUR.
+	FG.
+		blue %.ANSI.CSI%34m
+		green %.ANSI.CSI%32m
+		red %.ANSI.CSI%31m
+		RESET %.ANSI.CSI%39m
+	RESET %.ANSI.CSI%0m
