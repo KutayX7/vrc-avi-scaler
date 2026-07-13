@@ -130,6 +130,14 @@ main.
 		quit Type "quit" to quit.
 	unknown_command Unknown command. Type help to see a list of available commands.
 
+oscquery.
+	failed_to_get_OSC_info Failed to get OSC info from VRChat. %:error%s
+	listener.
+		detected_VRChat Detected VRChat OSCQuery service at %:address%s
+		service_removed VRChat OSCQuery service has been removed.
+	service.
+		starting Starting OSCQuery service at %:address%s
+
 prompt.
 	options.
 		yes_NO yes | No >

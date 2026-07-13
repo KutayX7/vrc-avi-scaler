@@ -6,6 +6,7 @@ from urllib.request import urlopen
 from zeroconf import IPVersion, ServiceInfo, ServiceBrowser, ServiceListener, Zeroconf
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Any
+from translator import printl
 
 zeroconf = Zeroconf()
 
@@ -115,7 +116,7 @@ class OSCQueryListener(ServiceListener):
     def remove_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         if name == globals.oscquery_vrchat_service_name:
             globals.oscquery_vrchat_service_name = ""
-            print("VRChat OSCQuery service has been removed.")
+            printl("oscquery.listener.service_removed")
 
     def add_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         info = zc.get_service_info(type_, name)
@@ -123,7 +124,7 @@ class OSCQueryListener(ServiceListener):
             address: str = socket.inet_ntoa(info.addresses[0])
             assert isinstance(info.port, int)
             port: int = info.port
-            print(f"Detected VRChat OSCQuery service at {address}:{port}")
+            printl("oscquery.listener.detected_VRChat", address=f"{address}:{port}")
             globals.oscquery_vrchat_service_name = name
             globals.oscquery_vrchat_address = address
             globals.oscquery_vrchat_port = port
@@ -178,7 +179,7 @@ def start_service() -> None:
     service_port = get_free_port()
     globals.oscquery_service_ip = service_ip
     globals.oscquery_service_port = service_port
-    print(f"Starting OSCQuery service at {service_ip}:{service_port}")
+    printl("oscquery.service.starting", address=f"{service_ip}:{service_port}")
     _run_async(_start_service, service_ip, service_port)
     _run_async(_start_http_server, service_port)
 
@@ -195,7 +196,7 @@ def get_VRChat_OSC_address() -> tuple[str, int] | None:
             data = json.loads(f.read().decode('utf-8'))
             return (data["OSC_IP"], data["OSC_PORT"])
     except Exception as e:
-        print("Failed to get OSC info from VRChat.", e)
+        printl("oscquery.failed_to_get_OSC_info", error=str(e))
         return None
 
 def get_value(address: str) -> tuple[Any, bool]:

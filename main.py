@@ -7,18 +7,14 @@ from pathlib import Path
 from config import ConfigLoadResult, reset_config_file, save_config, read_config
 from simple_types import ParameterValue, Height, Any
 from scaling_utils import get_base_eyeheight, parse_to_meters, is_valid_float
-from translator import Translator
+from translator import translator, printl
 from command import Command
 
 FEEDBACK_URL = "https://github.com/KutayX7/vrc-avi-scaler/issues"
 
-translator: Translator = Translator()
 translator.set_locale("auto")
 _ = translator.translate
 globals.translator = translator
-
-def printl(*args: Any, **kwargs: Any) -> None:
-    print(_(*args, **kwargs))
 
 def shutdown() -> None:
     printl("main.shutting_down")
@@ -305,40 +301,48 @@ def main() -> None:
         case ConfigLoadResult.SUCCESS:
             pass
         case ConfigLoadResult.NOT_FOUND:
-            print(_("main.init.config.not_found"))
+            printl("main.init.config.not_found")
             reset_config_file()
         case ConfigLoadResult.ACCESS_DENIED:
-            print(_("main.init.config.access_denied"))
+            printl("main.init.config.access_denied")
             sys.exit(-1)
         case ConfigLoadResult.CORRUPTED:
-            print(_("main.init.config.corrupted"))
+            printl("main.init.config.corrupted")
             choice = input(_("prompt.options.yes_NO"))
             if choice in _("%choice.yes"):
                 reset_config_file()
             else:
-                print(_("main.init.config.continue"))
+                printl("main.init.config.continue")
                 choice = input(_("prompt.options.yes_NO"))
                 if choice in _("%choice.yes"):
                     pass
                 else:
                     shutdown()
 
-    print("--------------------------------")
+    print( "--------------------------------")
     printl("main.to.get_help")
     printl("main.to.quit")
-    print("--------------------------------")
+    print( "--------------------------------")
+
     osc_server_ip = globals.osc_server_ip
     osc_server_port = globals.osc_server_port
+    globals.client = client.start_client(globals.osc_client_ip, globals.osc_client_port)
     if globals.oscquery_enabled:
-        oscquery.start_service()
-        oscquery.start_listener()
         osc_server_ip = ''
+        oscquery.start_service()
         osc_server_port = globals.oscquery_service_port
     globals.server = server.start_server(osc_server_ip, osc_server_port)
-    globals.client = client.start_client(globals.osc_client_ip, globals.osc_client_port)
+    if globals.oscquery_enabled:
+        oscquery.start_listener()
 
     while True:
-        process_command(input(""))
+        try:
+            process_command(input(""))
+        except EOFError:
+            # not running in a terminal
+            break
+    while True:
+        pass
 
 if __name__ == "__main__":
     main()

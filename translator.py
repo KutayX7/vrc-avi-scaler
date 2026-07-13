@@ -260,25 +260,7 @@ class Translator:
     def translate(self, key: str, *args: Any, **kwargs: Any) -> str:
         return self.get_translated_text(key, *args, **kwargs)
 
-if __name__ == "__main__":
-    # for testing
-    print("Testing translator")
-    translator = Translator()
-    test_locale = "example"
-    print("Setting locale to:", test_locale)
-    print(translator.set_locale(test_locale))
-    print("Cache:")
-    print(translator._entries)
-    print("Tests:")
-    tests: list[tuple[str, list[Any], dict[str, Any]]] = [
-        ("example.hello", [], {}),
-        ("example.key", [], {}),
-        ("example.foo", [], {}),
-        ("example.foobar", [], {}),
-        ("example.barfoo", [], {}),
-        ("example.welcome", [], {"name": "abcdefg"})
-    ]
-    for test in tests:
-        key, args, kwargs = test
-        template = translator.get_template(key, "")
-        print(test, " : ", template, " --> ", translator.translate(key, *args, **kwargs))
+translator: Translator = Translator()
+
+def printl(key: str, *args: tuple[Any], **kwargs: dict[Any]) -> None:
+    print(translator.translate(key, *args, **kwargs))
