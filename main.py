@@ -1,3 +1,4 @@
+import os
 import sys
 import globals
 import client
@@ -22,7 +23,7 @@ def shutdown() -> None:
     if globals.save_config_on_exit:
         save_config()
     printl("main.can_close_terminal")
-    sys.exit(0)
+    os._exit(0)
 
 def check_float(value: float) -> None:
     if not is_valid_float(value):
