@@ -147,10 +147,39 @@ def create_desktop_file() -> int:
             print("[INFO] Desktop entry creation is not supported on this platform. (At least not yet.)")
             return -1
 
+def is_Termux() -> bool:
+    if os.environ.get("TERMUX_VERSION"):
+        return True
+    return False
+
+def create_termux_shortcut() -> int:
+    if not is_Termux():
+        return 0
+    try:
+        shortcuts = Path.home() / ".shortcuts"
+        shortcuts = shortcuts.resolve()
+        if not shortcuts.exists():
+            shortcuts.mkdir()
+            print(f"Created {shortcuts}")
+            os.chmod(str(shortcuts), 0o700)
+        launch_script = shortcuts / "vrc-avi-scaler.sh"
+        print(f"Creating shortcut {launch_script}")
+        with launch_script.open("w") as f:
+            launch_script.write("#!/data/data/com.termux/files/usr/bin/bash\n")
+            launch_script.write("termux-wake-lock\n")
+            launch_script.write("cd ~/vrc-avi-scaler/\n")
+            launch_script.write("./start.sh\n")
+        os.chmod(str(launch_script), 0o700)
+        return 0
+    except Exception as e:
+        print(e)
+        return -1
+
 if (check_venv() == 0 and
     create_venv() == 0 and
     install_dependencies() == 0 and
-    make_start_script_executable() == 0):
+    make_start_script_executable() == 0 and
+    create_termux_shortcut() == 0):
     if not args.no_desktop:
         create_desktop_file()
     print("Installation complete.")
