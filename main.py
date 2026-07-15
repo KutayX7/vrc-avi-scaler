@@ -361,6 +361,8 @@ def should_relaunch_in_new_terminal() -> bool:
         return False
     if sys.stderr.isatty():
         return False
+    if "--no-relaunch" in sys.argv:
+        return False
     return True
 
 def main() -> None:
