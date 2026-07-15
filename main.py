@@ -304,6 +304,65 @@ def process_command(full_command: str) -> None:
     except:
         printl("main.unknown_command", command=full_command)
 
+def get_available_terminal_emulator() -> str|None:
+    from shutil import which
+    terminal: str = (
+        which("konsole") or
+        which("gnome-terminal") or
+        which("xfce4-terminal") or
+        which("alacritty") or
+        which("lxterminal") or
+        which("kitty") or
+        which("wezterm") or
+        which("terminator") or
+        which("urxvt") or
+        which("xterm") or
+        ""
+    )
+    return which(os.environ.get("TERMINAL", terminal))
+
+def get_terminal_exec_args(terminal: str) -> list[str]:
+    if "/" in terminal:
+        terminal = terminal[terminal.rindex("/")+1:]
+    match terminal:
+        case "konsole" | "xterm" | "lxterminal" | "urxvt" | "terminator":
+            return ["-e"]
+        case "wezterm":
+            return ["start", "--"]
+        case _:
+            return ["--"]
+
+def relaunch_in_new_terminal() -> None:
+    import subprocess
+    terminal = get_available_terminal_emulator()
+    if not terminal:
+        return
+    exec_args = get_terminal_exec_args(terminal)
+    main_path = Path(__file__).resolve()
+    dir_path = main_path.parent
+    if os.environ.get("APPIMAGE"):
+        main_path = Path(os.environ["APPIMAGE"]).resolve()
+        dir_path = main_path.parent
+        launch_command = f"cd {dir_path} && {main_path}"
+    else:
+        if __file__.endswith(".py"):
+            launch_command = f"cd {dir_path} && {sys.executable} {main_path}"
+        else:
+            launch_command = f"cd {dir_path} && {main_path}"
+    subprocess.Popen([terminal] + exec_args + ["bash", "-c"] + [launch_command])
+    os._exit(0)
+
+def should_relaunch_in_new_terminal() -> bool:
+    if os.name != "posix":
+        return False
+    if sys.stdout.isatty():
+        return False
+    if sys.stdin.isatty():
+        return False
+    if sys.stderr.isatty():
+        return False
+    return True
+
 def main() -> None:
     print("\033[0;33m[ KutayX7's VRChat Avi Scaler ]\033[0m")
     globals.config.load()
@@ -371,8 +430,11 @@ def main() -> None:
         except EOFError:
             # not running in a terminal
             break
+    # continue to run as a background service
     while True:
         pass
 
 if __name__ == "__main__":
+    if should_relaunch_in_new_terminal():
+        relaunch_in_new_terminal()
     main()
