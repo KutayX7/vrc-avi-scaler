@@ -168,7 +168,7 @@ def create_termux_shortcut() -> int:
             f.write("#!/data/data/com.termux/files/usr/bin/bash\n")
             f.write("termux-wake-lock\n")
             f.write("cd ~/vrc-avi-scaler/\n")
-            f.write("./start.sh\n")
+            f.write("bash ./start.sh\n")
         os.chmod(str(launch_script), 0o700)
         return 0
     except Exception as e:
