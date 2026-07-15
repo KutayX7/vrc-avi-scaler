@@ -160,10 +160,10 @@ def create_termux_shortcut() -> int:
         shortcuts = shortcuts.resolve()
         if not shortcuts.exists():
             shortcuts.mkdir()
-            print(f"Created {shortcuts}")
+            print(f"[INFO] Created {shortcuts}")
             os.chmod(str(shortcuts), 0o700)
         launch_script = shortcuts / "vrc-avi-scaler.sh"
-        print(f"Creating shortcut {launch_script}")
+        print(f"[INFO] Creating shortcut {launch_script}")
         with launch_script.open("w") as f:
             f.write("#!/data/data/com.termux/files/usr/bin/bash\n")
             f.write("termux-wake-lock\n")
@@ -172,7 +172,7 @@ def create_termux_shortcut() -> int:
         os.chmod(str(launch_script), 0o700)
         return 0
     except Exception as e:
-        print(e)
+        print(f"[ERROR]: {e}")
         return -1
 
 if (check_venv() == 0 and
