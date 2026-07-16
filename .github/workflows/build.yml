@@ -17,10 +17,10 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact-name: vrc-avi-scaler
+            artifact-name: kvas
             output-ext: ".AppImage"
           - os: windows-latest
-            artifact-name: vrc-avi-scaler
+            artifact-name: kvas-installer
             output-ext: ".msi"
 
     runs-on: ${{ matrix.os }}
