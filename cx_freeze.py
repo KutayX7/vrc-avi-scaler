@@ -10,6 +10,9 @@ build_options = {
     'packages': [],
     'zip_exclude_packages': [],
     'excludes': [],
+    'include_files': [
+        ('translations', 'translations'),
+    ],
 }
 
 base = 'console'
