@@ -1,6 +1,8 @@
+import os
 import sys
 from cx_Freeze import setup, Executable
 
+gitrelease=os.environ['RELEASEVERSION']
 
 # Dependencies are automatically detected, but it might need
 # fine tuning.
@@ -20,16 +22,16 @@ directory_table = [
 msi_data = {
     "Directory": directory_table,
     "ProgId": [
-        ("Prog.Id", "0.0.5", None, "Scale your avatar over OSC", "IconId", None),
+        ("Prog.Id", "gitrelease", None, "Scale your avatar over OSC", "IconId", None),
     ],
     "Icon": [
         ("IconId", "icon_windows.ico"),
     ],
     "Shortcut": [
-        ("DesktopShortcut", "DesktopFolder", "VRChat Avatar Scaler",
+        ("DesktopShortcut", "DesktopFolder", "KVAS",
          "TARGETDIR", "[TARGETDIR]main.exe",
          None, None, None, None, None, None, "TARGETDIR"),
-        ("StartMenuShortcut", "MyProgramMenu", "VRChat Avatar Scaler",
+        ("StartMenuShortcut", "MyProgramMenu", "KVAS",
          "TARGETDIR", "[TARGETDIR]main.exe",
          None, None, None, None, None, None, "TARGETDIR"),
     ],
@@ -39,10 +41,10 @@ bdist_msi_options = {
     "add_to_path": True,
     "data": msi_data,
     "upgrade_code": "{1e24271f-7f5a-4075-a957-5eab6e44b451}",
-    "output_name": "vrc-avi-scaler.msi",
+    "output_name": "kvas-installer.msi",
 }
 bdist_appimage_options = {
-    "target_name": "vrc-avi-scaler.AppImage",
+    "target_name": "kvas.AppImage",
 }
 
 # Pick the right icon per platform
@@ -59,8 +61,8 @@ executables = [
     ),
 ]
 
-setup(name='vrc-avi-scaler',
-      version = '0.0.5',
+setup(name='kvas',
+      version = gitrelease,
       description = "Change your avatar's scale over osc",
       license = "MIT License",
       options = {
