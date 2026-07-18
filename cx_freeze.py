@@ -10,6 +10,8 @@ if sys.platform == "linux":
 	zsyncUpdateType="gh-releases-zsync|"
 	zsyncFileName="|kvas-*.AppImage"
 	zsyncUpdateValue= zsyncUpdateType + gitRepo + zsyncFileName
+else
+	zsyncUpdateValue=na
 
 # Dependencies are automatically detected, but it might need
 # fine tuning.
@@ -55,7 +57,6 @@ bdist_msi_options = {
 }
 bdist_appimage_options = {
     "target_name": "kvas",
-    #i need to escape it from quotes
     "updateinformation": zsyncUpdateValue
 }
 
