@@ -55,7 +55,9 @@ bdist_msi_options = {
     "add_to_path": True,
     "data": msi_data,
     "upgrade_code": "{1e24271f-7f5a-4075-a957-5eab6e44b451}",
-    "output_name": "kvas-installer",
+    #"output_name": "kvas-installer",
+    "product_name": "kvas",
+    "product_version": gitRelease, 
 }
 bdist_appimage_options = {
     "target_name": "kvas",
