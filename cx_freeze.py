@@ -17,7 +17,7 @@ build_options = {
     'zip_exclude_packages': [],
     'excludes': [],
     'include_files': [
-        ('translations', 'translations'),
+        #('translations', 'translations'),
     ],
 }
 
