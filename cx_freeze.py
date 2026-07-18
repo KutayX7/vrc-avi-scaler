@@ -3,10 +3,12 @@ import sys
 from cx_Freeze import setup, Executable
 
 gitRelease=os.environ['RELEASEVERSION']
-gitRepo=os.environ['GITHUB_REPOSITORY_CLEAN']
 
-zsyncUpdateType="gh-releases-zsync|"
-zsyncFileName="|kvas-*.AppImage"
+#linux zsync update data
+if sys.platform == "linux":
+	gitRepo=os.environ['GITHUB_REPOSITORY_CLEAN']
+	zsyncUpdateType="gh-releases-zsync|"
+	zsyncFileName="|kvas-*.AppImage"
 
 zsyncUpdateValue= zsyncUpdateType + gitRepo + zsyncFileName
 print(zsyncUpdateValue)
