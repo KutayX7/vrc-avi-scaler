@@ -67,10 +67,11 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.artifact-name }}
-          path: dist/${{ matrix.artifact-name }}${{ matrix.output-ext }}
+          path: dist/${{ matrix.artifact-name }}*${{ matrix.output-ext }}
           retention-days: 30
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/${{ matrix.artifact-name }}${{ matrix.output-ext }}
+          files: dist/${{ matrix.artifact-name }}*${{ matrix.output-ext }}
+		 dist/${{ matrix.artifact-name }}*.zsync
