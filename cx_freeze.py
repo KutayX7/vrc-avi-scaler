@@ -2,8 +2,14 @@ import os
 import sys
 from cx_Freeze import setup, Executable
 
-gitrelease=os.environ['RELEASEVERSION']
+gitRelease=os.environ['RELEASEVERSION']
+gitRepo=os.environ['GITHUB_REPOSITORY_CLEAN']
 
+zsyncUpdateType="gh-releases-zsync|"
+zsyncFileName="|kvas-*.AppImage"
+
+zsyncUpdateValue= zsyncUpdateType + gitRepo + zsyncFileName
+print(zsyncUpdateValue)
 # Dependencies are automatically detected, but it might need
 # fine tuning.
 build_options = {
@@ -15,7 +21,7 @@ build_options = {
     ],
 }
 
-base = 'console'
+base = 'gui'
 
 directory_table = [
     ("ProgramMenuFolder", "TARGETDIR", "."),
@@ -25,7 +31,7 @@ directory_table = [
 msi_data = {
     "Directory": directory_table,
     "ProgId": [
-        ("Prog.Id", "gitrelease", None, "Scale your avatar over OSC", "IconId", None),
+        ("Prog.Id", "gitRelease", None, "Scale your avatar over OSC", "IconId", None),
     ],
     "Icon": [
         ("IconId", "icon_windows.ico"),
@@ -44,10 +50,12 @@ bdist_msi_options = {
     "add_to_path": True,
     "data": msi_data,
     "upgrade_code": "{1e24271f-7f5a-4075-a957-5eab6e44b451}",
-    "output_name": "kvas-installer.msi",
+    "output_name": "kvas-installer",
 }
 bdist_appimage_options = {
-    "target_name": "kvas.AppImage",
+    "target_name": "kvas",
+    #i need to escape it from quotes
+    "updateinformation": zsyncUpdateValue
 }
 
 # Pick the right icon per platform
@@ -65,7 +73,7 @@ executables = [
 ]
 
 setup(name='kvas',
-      version = gitrelease,
+      version = gitRelease,
       description = "Change your avatar's scale over osc",
       license = "MIT License",
       options = {
