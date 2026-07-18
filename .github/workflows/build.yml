@@ -20,7 +20,7 @@ jobs:
             artifact-name: kvas
             output-ext: ".AppImage"
           - os: windows-latest
-            artifact-name: kvas-installer
+            artifact-name: kvas
             output-ext: ".msi"
 
     runs-on: ${{ matrix.os }}
