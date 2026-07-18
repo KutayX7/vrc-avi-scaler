@@ -10,8 +10,11 @@ if sys.platform == "linux":
 	zsyncUpdateType="gh-releases-zsync|"
 	zsyncFileName="|kvas-*.AppImage"
 	zsyncUpdateValue= zsyncUpdateType + gitRepo + zsyncFileName
+	base = 'gui'
+
 else:
 	zsyncUpdateValue="na"
+	base = 'console'
 
 # Dependencies are automatically detected, but it might need
 # fine tuning.
@@ -24,7 +27,6 @@ build_options = {
     ],
 }
 
-base = 'gui'
 
 directory_table = [
     ("ProgramMenuFolder", "TARGETDIR", "."),
