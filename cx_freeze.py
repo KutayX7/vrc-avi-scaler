@@ -10,7 +10,7 @@ if sys.platform == "linux":
 	zsyncUpdateType="gh-releases-zsync|"
 	zsyncFileName="|kvas-*.AppImage"
 	zsyncUpdateValue= zsyncUpdateType + gitRepo + zsyncFileName
-else
+else:
 	zsyncUpdateValue=na
 
 # Dependencies are automatically detected, but it might need
