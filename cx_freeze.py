@@ -9,9 +9,8 @@ if sys.platform == "linux":
 	gitRepo=os.environ['GITHUB_REPOSITORY_CLEAN']
 	zsyncUpdateType="gh-releases-zsync|"
 	zsyncFileName="|kvas-*.AppImage"
+	zsyncUpdateValue= zsyncUpdateType + gitRepo + zsyncFileName
 
-zsyncUpdateValue= zsyncUpdateType + gitRepo + zsyncFileName
-print(zsyncUpdateValue)
 # Dependencies are automatically detected, but it might need
 # fine tuning.
 build_options = {
