@@ -53,7 +53,7 @@ jobs:
       - name: Build with CX_Freeze (Linux)
         if: runner.os == 'Linux'
         run: |
-          RELEASEVERSION="${GITHUB_REF#refs/tags/}" python cx_freeze.py bdist_appimage
+          GITHUB_REPOSITORY_CLEAN=${GITHUB_REPOSITORY////|} RELEASEVERSION="${GITHUB_REF#refs/tags/}" python cx_freeze.py bdist_appimage
         
       - name: Build with CX_Freeze (Windows)
         if: runner.os == 'Windows'
