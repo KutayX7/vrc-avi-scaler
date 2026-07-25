@@ -1,7 +1,10 @@
 from pathlib import Path
 from typing import Any
 
-TRANSLATIONS_PATH: Path = Path() / "translations"
+TRANSLATIONS_PATH: Path = Path(__file__).parent / "translations"
+if not TRANSLATIONS_PATH.exists():
+    TRANSLATIONS_PATH = Path() / "translations"
+
 TRANSLATION_FILE_SUFFIX: str = ".txt"
 DEPENDENCIES_KEY: str = "%%depends"
 
