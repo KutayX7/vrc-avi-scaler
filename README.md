@@ -117,6 +117,7 @@ There are no official packages distributed outside of this repository.
   * It will also create a desktop entry (if possible and supported).
     * Only supported on desktop linux distros, for now.
     * Append ` --no-desktop ` to skip desktop entry creation.
+  * On Termux, it will create a Termux shortcut. You can use the [Termux:Widget](https://github.com/termux/termux-widget) app to add it as a widget to your home screen.
 
 ## Updates
 
@@ -145,6 +146,10 @@ To start the program:
     * If you installed this in another way and don't see anything opening:
       * Create a desktop entry to the executable and make sure the option to run it in terminal is checked.
       * Details on how to do that depend on how you installed the app and which desktop environment you use.
+  * On Termux:
+    * Either install the [Termux:Widget](https://github.com/termux/termux-widget) app to add the launch script as a widget on your home screen
+      or run `.shortcuts/vrc-avi-scaler.sh`
+
 
 Make sure to enable OSC in VRChat! (Either in settings or in Action Menu > Options > OSC)
 

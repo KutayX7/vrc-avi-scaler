@@ -156,20 +156,29 @@ def create_termux_shortcut() -> int:
     if not is_Termux():
         return 0
     try:
+        print("[INFO] Detected Termux environment.")
         shortcuts = Path.home() / ".shortcuts"
         shortcuts = shortcuts.resolve()
-        if not shortcuts.exists():
+        if shortcuts.exists():
+            print(f"[INFO] Shortcuts directory already exist: {shortcuts}")
+        else:
             shortcuts.mkdir()
-            print(f"[INFO] Created {shortcuts}")
+            print(f"[INFO] Created shortcuts directory: {shortcuts}")
             os.chmod(str(shortcuts), 0o700)
         launch_script = shortcuts / "vrc-avi-scaler.sh"
-        print(f"[INFO] Creating shortcut {launch_script}")
+        if launch_script.exists():
+            print(f"[INFO] Shortcut {launch_script} already exist. It will be overwritten.")
+        else:
+            print(f"[INFO] Creating shortcut {launch_script}")
         with launch_script.open("w") as f:
             f.write("#!/data/data/com.termux/files/usr/bin/bash\n")
             f.write("termux-wake-lock\n")
             f.write("cd ~/vrc-avi-scaler/\n")
             f.write("bash ./start.sh\n")
         os.chmod(str(launch_script), 0o700)
+        print("[INFO] Created shortcut.")
+        print("       Note: Both Termux and Termux:Widget")
+        print("       must be installed from the same source.")
         return 0
     except Exception as e:
         print(f"[ERROR]: {e}")
