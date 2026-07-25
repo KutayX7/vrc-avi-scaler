@@ -177,8 +177,7 @@ def create_termux_shortcut() -> int:
             f.write("bash ./start.sh\n")
         os.chmod(str(launch_script), 0o700)
         print("[INFO] Created shortcut.")
-        print("       Note: Both Termux and Termux:Widget")
-        print("       must be installed from the same source.")
+        print("       You can use the Termux:Widget app to add it your home screen.")
         return 0
     except Exception as e:
         print(f"[ERROR]: {e}")
