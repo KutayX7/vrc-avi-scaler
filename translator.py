@@ -1,12 +1,34 @@
 from pathlib import Path
 from typing import Any
 
-TRANSLATIONS_PATH: Path = Path(__file__).parent / "translations"
-if not TRANSLATIONS_PATH.exists():
-    TRANSLATIONS_PATH = Path() / "translations"
-
 TRANSLATION_FILE_SUFFIX: str = ".txt"
 DEPENDENCIES_KEY: str = "%%depends"
+
+def _get_translations_path() -> Path:
+    import os
+    APPDIR: str = os.environ.get("APPDIR", "")
+    XDG_CONFIG_HOME: str = os.environ.get("XDG_CONFIG_HOME", "")
+    config_dir_name = "vrc-avi-scaler"
+    paths: list[Path] = [
+        Path() / ".config" / config_dir_name / "translations",
+    ]
+    if XDG_CONFIG_HOME:
+        paths.append(Path(XDG_CONFIG_HOME) / config_dir_name / "translations")
+    else:
+        paths.append(Path.home() / ".config" / config_dir_name / "translations")
+    if APPDIR:
+        paths.append(Path(APPDIR) / ".config" / config_dir_name / "translations")
+        paths.append(Path(APPDIR) / "data" / "translations")
+        paths.append(Path(APPDIR) / "translations")
+    paths.append(Path() / "data" / "translations")
+    paths.append(Path() / "translations")
+    resolved_paths = [path.resolve() for path in paths]
+    for path in resolved_paths:
+        if path.is_dir():
+            return path
+    raise Exception(f"Couldn't find the translations directory. Paths: {resolved_paths}")
+
+TRANSLATIONS_PATH = _get_translations_path()
 
 def _get_indent_level(line: str) -> int:
     count: int = 0
