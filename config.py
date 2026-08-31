@@ -83,7 +83,12 @@ class Config:
                     case "darwin": # macOS
                         subprocess.Popen(["open", path])
                     case _:
-                        subprocess.Popen(["xdg-open", path])
+                        subprocess.Popen(
+                            ["xdg-open", path],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL,
+                            start_new_session=True
+                        )
             case _:
                 pass
 
