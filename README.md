@@ -6,7 +6,7 @@ WARNING: This is a 100% free and open-source software (FOSS). Official up-to-dat
 There are no official packages distributed outside of this repository.
 
 
-| [日本語](/docs/README_jp.md) | [Türkçe](/docs/README_tr.md) |
+| [Türkçe](/docs/README_tr.md) |
 
 
 ## Features
@@ -30,11 +30,6 @@ There are no official packages distributed outside of this repository.
   * Includes automatic workarounds for the VRChat Windows OSCQuery limitation.
 - Various commands, see [all commands](#all-commands).
 - Offline localisation.
-
-> [!NOTE]
-> A first-party scaling system (Unity/VCC prefab) is in development.
-> A sample avatar to try it early: https://vrchat.com/home/avatar/avtr_afad73bf-ecfe-460a-b35b-6e77b29304b6
-> (it's not complete yet but it's somewhat usable; development of it may be very slow as it's not the main focus of this project)
 
 ## Installation
 

@@ -2,3 +2,5 @@
 
 # Fallback translations
 %%depends en,
+
+METRE meter

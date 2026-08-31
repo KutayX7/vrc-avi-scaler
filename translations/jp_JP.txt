@@ -1,0 +1,19 @@
+# Japanese (Japan)
+# 日本語 (日本)
+
+# Fallback translations
+%%depends en,
+
+%choice.
+	no no,n,No,N,NO,いいえ,ううん
+	yes yes,y,Yes,Y,YES,はい,ええ,うん
+
+# Commented this out because I'm
+# not sure if it is right.
+#.number.
+#	grouping.size 4
+
+prompt.
+	options.
+		yes_NO  はい  | [いいえ] >
+		YES_no [はい] |  いいえ  >

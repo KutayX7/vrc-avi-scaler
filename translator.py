@@ -44,6 +44,8 @@ class Translator:
         self._current_locale: str = ""
         self._loaded_locales: set[str] = set()
         self._entries: dict[str, str] = {}
+        self.preferred_length_unit: str = "metre"
+        self.shorten_length_unit: bool = True
 
     @staticmethod
     def get_system_locale() -> str|None:
@@ -147,20 +149,80 @@ class Translator:
     def locale(self) -> str:
         return self._current_locale
 
-    def get_unit_of(self, unit_type: str, default: str) -> str:
-        return self._entries.get(f"units.{unit_type}", default)
-
-    def get_unit_of_length(self) -> str:
-        return self.get_unit_of("length", "meters")
+    def has_key(self, key: str) -> bool:
+        return True if key in self._entries else False
 
     def get_template(self, key: str, default: str|None = None) -> str:
         return self._entries.get(key, default if default != None else key)
 
     def localise_integer(self, value: int) -> str:
-        return str(value)
+        if value < 0:
+            return "-" + self.localise_integer(-value)
+        group_size: int = 3
+        group_separator: str = ","
+        if self.has_key(".number.grouping.separator"):
+            group_separator = self.translate(".number.grouping.separator")
+        if self.has_key(".number.grouping.size"):
+            group_size = int(self.translate(".number.grouping.size"))
+        output: str = ""
+        index: int = 0
+        for digit in str(value)[::-1]:
+            if index % group_size == 0:
+                output += group_separator
+            index += 1
+            output += digit
+        return output[:len(group_separator)-1:-1]
 
     def localise_rational_number(self, value: float) -> str:
-        return str(value)
+        if value.is_integer():
+            return self.localise_integer(int(value))
+        if value < 0:
+            return "-" + self.localise_rational_number(-value)
+        decimal_separator: int = "."
+        if self.has_key(".number.decimal_separator"):
+            decimal_separator = self.translate(".number.decimal_separator")
+        int_part = int(value)
+        frac_part = value % 1
+        int_str = self.localise_integer(int_part)
+        return int_str + decimal_separator + str(frac_part)[2:]
+
+    def localise_length(self, length: float, unit: str = "") -> str:
+        if not unit:
+            unit = self.preferred_length_unit
+        min_value: float = 0.0
+        max_value: float = 0.0
+        multiplier: float = 1.0
+        overflow: str = ""
+        underflow: str = ""
+        if self.has_key(f".length.unit.{unit}.max"):
+            max_value = float(self.translate(f".length.unit.{unit}.max"))
+        if self.has_key(f".length.unit.{unit}.min"):
+            min_value = float(self.translate(f".length.unit.{unit}.min"))
+        if self.has_key(f".length.unit.{unit}.multiplier"):
+            multiplier = float(self.translate(f".length.unit.{unit}.multiplier"))
+        if self.has_key(f".length.unit.{unit}.overflow"):
+            overflow = self.translate(f".length.unit.{unit}.overflow")
+        if self.has_key(f".length.unit.{unit}.underflow"):
+            underflow = self.translate(f".length.unit.{unit}.underflow")
+        multiplied_length = length * multiplier
+        if max_value and overflow and multiplied_length > max_value:
+            return self.localise_length(length, overflow)
+        if min_value and underflow and multiplied_length < min_value:
+            return self.localise_length(length, underflow)
+        if self.shorten_length_unit:
+            if multiplied_length == 1.0 and self.has_key(f".length.unit.{unit}.short.=1"):
+                return self.translate(f".length.unit.{unit}.short.=1")
+            return self.translate(
+                f".length.unit.{unit}.short.any",
+                value=multiplied_length
+            )
+        else:
+            if multiplied_length == 1.0 and self.has_key(f".length.unit.{unit}.long.=1"):
+                return self.translate(f".length.unit.{unit}.long.=1")
+            return self.translate(
+                f".length.unit.{unit}.long.any",
+                value=multiplied_length
+            )
 
     def interpret(self, template: str, *args: Any, **kwargs: Any) -> str:
         tape: list[str] = list(template)
@@ -248,9 +310,7 @@ class Translator:
                             insert_str_into_tape_and_skip(hex(value))
                         case "l":
                             assert isinstance(value, float)
-                            # TODO: Define how to define units and actually implement length unit conversion.
-                            # This is a temporary very dirty method.
-                            insert_str_into_tape(f"%:{kwarg_name}%rm")
+                            insert_str_into_tape_and_skip(self.localise_length(value))
                         case _:
                             raise Exception(f"Not implemented kwarg type: {kwarg_type}.")
                     mode = 0

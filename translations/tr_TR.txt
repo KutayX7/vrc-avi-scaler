@@ -8,6 +8,10 @@
 	no no,n,No,N,NO,hayır,hayir,h,Hayır,Hayir,H,HAYİR,HAYIR
 	yes yes,y,Yes,Y,YES,evet,e,Evet,E,EVET
 
+.number.
+	decimal_separator ,
+	grouping.separator .
+
 client.
 	address_changed OSC client adresi %:address%s olarak değiştirildi.
 	auto_height_check
@@ -139,6 +143,8 @@ main.
 	to.
 		get_help "help" yazarak komut listesini görebilirsiniz.
 		quit "quit" yazarak programdan çıkabilirsiniz.
+	too_short Çok kısa. Minimum: %:min%l
+	too_tall Çok uzun. Maksimum: %:max%l
 	unknown_command Bilinmeyen komut.%\nhelp yazarak komut listesini görebilirsiniz.
 	vrmode_locked_to VRMode %:vrmode%I olarak kilitlendi.
 

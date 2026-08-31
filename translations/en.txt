@@ -8,6 +8,79 @@
 	no no,n,No,N,NO
 	yes yes,y,Yes,Y,YES
 
+# Length unit definitions.
+# Since this is the default translation file
+# we define all common units here.
+.length.
+	default_unit metre
+	unit.
+		centimetre.
+			long.
+				=1 1 centi%.METRE%
+				any %:value%r centi%.METRE%s
+			max 100
+			min 1
+			multiplier 100
+			overflow metre
+			short.
+				any %:value%r cm
+			underflow millimetre
+		foot.
+			long.
+				=1 1 foot
+				any %:value%r feet
+			min 1
+			multiplier 3.28084
+			selectable 1
+			short.
+				any %:value%r ft
+			underflow inch
+		inch.
+			long.
+				=1 1 inch
+				any %:value%r inches
+			max 12
+			multiplier 0.0254
+			overflow foot
+			short.
+				any %:value%r in
+		kilometre.
+			long.
+				=1 1 kilo%.METRE%
+				any %:value%r kilo%.METRE%s
+			min 1
+			multiplier 0.001
+			short.
+				any %:value%r km
+			underflow metre
+		metre.
+			long.
+				=1 1 %.METRE%
+				any %:value%r %.METRE%s
+			max 1000
+			min 1
+			multiplier 1
+			overflow kilometre
+			selectable 1
+			short.
+				any %:value%r m
+			underflow centimetre
+		millimetre.
+			long.
+				=1 1 milli%.METRE%
+				any %:value%r milli%.METRE%s
+			max 10
+			multiplier 1000
+			overflow centimetre
+			short.
+				any %:value%r mm
+
+.number.
+	decimal_separator .
+	grouping.
+		separator ,
+		size 3
+
 client.
 	address_changed OSC client address changed to %:address%s
 	auto_height_check
@@ -139,6 +212,8 @@ main.
 	to.
 		get_help Type "help" to see a list of commands.
 		quit Type "quit" to quit.
+	too_short Too short. Minimum: %:min%l
+	too_tall Too tall. Maximum: %:max%l
 	unknown_command Unknown command. Type help to see a list of available commands.
 	vrmode_locked_to VRMode has been locked to %:vrmode%I.
 
@@ -182,3 +257,5 @@ COLOUR.
 		red %.ANSI.CSI%31m
 		RESET %.ANSI.CSI%39m
 	RESET %.ANSI.CSI%0m
+
+METRE metre
