@@ -183,8 +183,9 @@ class Translator:
             decimal_separator = self.translate(".number.decimal_separator")
         int_part = int(value)
         frac_part = value % 1
+        frac_str = str(frac_part + 1)[2:]
         int_str = self.localise_integer(int_part)
-        return int_str + decimal_separator + str(frac_part)[2:]
+        return int_str + decimal_separator + frac_str
 
     def localise_length(self, length: float, unit: str = "") -> str:
         if not unit:
