@@ -1,5 +1,9 @@
 # KutayX7's VRChat Avi Scaler
 
+![license](https://img.shields.io/badge/license-MIT-green?style=flat)
+![platforms](https://img.shields.io/badge/platforms-Linux%7CWindows%7CAndroid%7CmacOS-blue?style=flat)
+![python](https://img.shields.io/badge/python-3.12%2B-blue?style=flat)
+
 A tool to scale your avatar on VRChat via OSC.
 
 WARNING: This is a 100% free and open-source software (FOSS). Official up-to-date repository link: https://github.com/KutayX7/vrc-avi-scaler
@@ -218,7 +222,8 @@ A: Yes. But if it's another OSC scaling app, you may want to use the `nocompat` 
 - `smooth [seconds]` Sets smooth scaling duration.
   - Short version: `s [seconds]`
   - Not saved. Disabled by default.
-- `help` Shows some of the most useful commands.
+- `help [command]` If `[command]` is specified, it shows information about the command. If not specified, shows information about all the commands.
+  - Please use this command as this list may not be up-do-date.
 - `exit` Exits the app. Saves the config if `autosave` is on.
   - Short version: `q`
 - `framerate <fps>` Sets the expected FPS.
@@ -260,8 +265,14 @@ A: Yes. But if it's another OSC scaling app, you may want to use the `nocompat` 
   - Short version: `o`
 - `instant` Disables smooth scaling.
   - Same as: `s 0`
+- `delay <seconds> <command>` Executes the given command after the specified amount of seconds.
+  - Not to be confused with sleep!
+  - Short version: `d <seconds> <command>`
 - `fix_osc_client` Restarts OSC client on/to the latest detected VRChat address and port.
   - It's usually solved automatically so you probably never have to use this.
+
+> [!TIP]
+> You can run multiple commands in a single line by separating them with a semicolon (`;`). Combined with `delay`, this allows you to create a timed sequence of commands.
 
 ## Contribution
 

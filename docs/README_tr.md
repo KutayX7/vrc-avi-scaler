@@ -1,5 +1,9 @@
 # KutayX7's VRChat Avi Scaler
 
+![lisans](https://img.shields.io/badge/lisans-MIT-green?style=flat)
+![platformlar](https://img.shields.io/badge/platformlar-Linux%7CWindows%7CAndroid%7CmacOS-blue?style=flat)
+![python](https://img.shields.io/badge/python-3.12%2B-blue?style=flat)
+
 OSC aracılığıyla VRChat'teki avatarlarınızı boyutlandırmak için bir araç.
 
 **UYARI:** Bu %100 ücretsiz ve açık kaynaklı bir yazılımdır (FOSS). Resmi güncel depo bağlantısı: https://github.com/KutayX7/vrc-avi-scaler
@@ -253,8 +257,13 @@ C: Evet. Ancak başka bir OSC ölçeklendirme uygulamasıysa, kullanım sırası
   - Kısa versiyon: `o`
 - `instant` Yumuşak ölçeklendirmeyi devre dışı bırakır.
   - Aynı şey: `s 0`
+- `delay <saniye> <komut>` Verilen komutu belirtilen süreden sonra çalıştırır.
+  - Kısa version: `delay <saniye> <komut>`
 - `fix_osc_client` OSC istemcisini en son algılanan VRChat adresi ve bağlantı noktasına yeniden başlatır.
   - Genellikle otomatik olarak çözüldüğü için muhtemelen bunu kullanmanız gerekmeyecektir.
+
+> [!TIP]
+> Komutları noktalı virgül (`;`) ile ayırarak tek bir satırda birden fazla komut çalıştırabilirsiniz. Bu yöntem, `delay` ile birlikte kullanıldığında, zaman ayarlı bir komut dizisi oluşturmanıza olanak tanır.
 
 ## Katkıda Bulunma (Contribution)
 
