@@ -195,7 +195,7 @@ Ve deponun veya kurulum/güncelleme betiklerinde bozulabilecek değişiklikler o
 
 **S: Bir GUI planı var mı?**
 
-C: Şimdilik hiçbir plan yok. GUI'li alternatif uygulamalar mevcut. Ayrıca, bunu kendi GUI projelerinizin arka ucu olarak kullanmaktan çekinmeyin (ama bu amaçla tasarlanmadığı için bol şans).
+C: Lütfen [issue #19](https://github.com/KutayX7/vrc-avi-scaler/issues/19) a bakınız. Ayrıca GUI'li alternatif uygulamalar mevcut. Eğer geliştiriciyseniz bunu kendi GUI projelerinizin backendi olarak kullanmaktan çekinmeyin.
 
 **S: X ölçeklendirme sistemiyle uyumluluk var mı?**
 

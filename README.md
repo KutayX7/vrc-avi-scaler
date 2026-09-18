@@ -202,7 +202,7 @@ And be aware that there may be breaking changes to the repository or setup/updat
 
 **Q: Any plans for a GUI?**
 
-A: Not any plans for now. There are alternative apps with GUIs. Also, feel free to use this as the backend of your own GUI projects (but good luck with it as this is not designed for that).
+A: Check [issue #19](https://github.com/KutayX7/vrc-avi-scaler/issues/19). Also, there are alternative apps with GUIs. And if you're a developer, feel free to use this as the backend of your own GUI projects.
 
 **Q: Compatibility with X scaling system?**
 
