@@ -1,0 +1,6 @@
+# English (United States)
+
+# Fallback translations
+%%depends en,
+
+METRE meter
