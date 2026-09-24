@@ -1,0 +1,79 @@
+# .github/workflows/build.yml
+name: Build CX_Freeze Binaries
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # ← opt into Node 24 now
+
+permissions:
+  contents: write
+  
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact-name: kvas
+            output-ext: ".AppImage"
+          - os: windows-latest
+            artifact-name: kvas
+            output-ext: ".msi"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+
+      # --- Python +  CX_Freeze ---
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          pip install -r requirements.txt
+          pip install cx_Freeze freeze-core
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          pip install -r requirements.txt
+          pip install cx_Freeze freeze-core
+
+      # --- Build ---
+      - name: Build with CX_Freeze (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          GITHUB_REPOSITORY_CLEAN=${GITHUB_REPOSITORY////|} RELEASEVERSION="${GITHUB_REF#refs/tags/}" python cx_freeze.py bdist_appimage
+        
+      - name: Build with CX_Freeze (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          set RELEASEVERSION=%GITHUB_REF:refs/tags/=%
+          python cx_freeze.py bdist_msi
+
+      # --- Upload ---
+      - name: Upload binary
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: dist/${{ matrix.artifact-name }}*${{ matrix.output-ext }}
+          retention-days: 30
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v3
+        with:
+          working_directory: dist
+          files: |
+            ${{ matrix.artifact-name }}*${{ matrix.output-ext }}
+            ${{ matrix.artifact-name }}*.zsync
